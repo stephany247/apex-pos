@@ -1,0 +1,7 @@
+{
+  "name": "Apex POS",
+  "description": "A modern, high-performance Point of Sale and Inventory Management system for SMEs. Features real-time stock tracking, comprehensive analytics, and a lightning-fast cashier interface.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
