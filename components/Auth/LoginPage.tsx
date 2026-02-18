@@ -1,109 +1,147 @@
-import React, { useState } from 'react';
-import { useStore } from '../../context/StoreContext';
-import { ArrowRight, Lock, Mail, Loader2 } from 'lucide-react';
+import React, { useState } from "react";
+import { useStore } from "../../context/StoreContext";
+import { ArrowRight, Lock, Mail, Loader2 } from "lucide-react";
 
 interface LoginPageProps {
-    onNavigateToSignup: () => void;
+  onNavigateToSignup: () => void;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToSignup }) => {
-    const { login } = useStore();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+  const { login } = useStore();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setIsLoading(true);
-        try {
-            await login(email, password);
-        } catch (err) {
-            setError('Invalid credentials');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
 
-    return (
-        <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-[#FDF6E9] text-[#111]">
-            <div className="w-full max-w-md">
-                <div className="text-center mb-10">
-                    <h1 className="text-5xl font-bold tracking-tight mb-2">apex<span className="text-zinc-400">.</span></h1>
-                    <p className="text-zinc-500 font-medium">Retail Management System</p>
-                </div>
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password.trim();
 
-                <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-zinc-900/5 border border-white">
-                    <h2 className="text-2xl font-bold mb-6 text-center">Welcome Back</h2>
-                    
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-4">Email Address</label>
-                            <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
-                                <input 
-                                    type="email" 
-                                    value={email}
-                                    onChange={e => setEmail(e.target.value)}
-                                    placeholder="name@company.com"
-                                    className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-4 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
-                                    required
-                                />
-                            </div>
-                        </div>
+    // Required fields
+    if (!trimmedEmail || !trimmedPassword) {
+      setError("Email and password are required");
+      return;
+    }
 
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-4">Password</label>
-                            <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
-                                <input 
-                                    type="password" 
-                                    value={password}
-                                    onChange={e => setPassword(e.target.value)}
-                                    placeholder="••••••••"
-                                    className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-4 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
-                                    required
-                                />
-                            </div>
-                        </div>
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setError("Please enter a valid email address");
+      return;
+    }
 
-                        {error && (
-                            <div className="text-red-500 text-sm font-medium text-center bg-red-50 py-2 rounded-xl">
-                                {error}
-                            </div>
-                        )}
+    if (trimmedPassword.length === 0) {
+      setError("Password cannot be empty");
+      return;
+    }
 
-                        <button 
-                            type="submit" 
-                            disabled={isLoading}
-                            className="w-full py-4 bg-[#111] text-white rounded-2xl font-bold text-lg shadow-lg shadow-zinc-900/10 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
-                        >
-                            {isLoading ? (
-                                <Loader2 size={24} className="animate-spin" />
-                            ) : (
-                                <>
-                                    Sign In <ArrowRight size={20} />
-                                </>
-                            )}
-                        </button>
-                    </form>
-                </div>
+    if (trimmedPassword.length < 8) {
+      setError("Invalid credentials");
+      return;
+    }
 
-                <div className="text-center mt-8">
-                    <p className="text-zinc-500 font-medium">
-                        Don't have an account?{' '}
-                        <button 
-                            onClick={onNavigateToSignup}
-                            className="text-black font-bold hover:underline"
-                        >
-                            Create one
-                        </button>
-                    </p>
-                </div>
-            </div>
+    setIsLoading(true);
+    try {
+      await login(trimmedEmail, trimmedPassword);
+    } catch {
+      setError("Invalid credentials");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-[#FDF6E9] text-[#111]">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-10">
+          <h1 className="text-5xl font-bold tracking-tight mb-2">
+            apex<span className="text-zinc-400">.</span>
+          </h1>
+          <p className="text-zinc-500 font-medium">Retail Management System</p>
         </div>
-    );
+
+        <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-zinc-900/5 border border-white">
+          <h2 className="text-2xl font-bold mb-6 text-center">Welcome Back</h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-4">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"
+                  size={20}
+                />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@company.com"
+                  className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-4 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-4">
+                Password
+              </label>
+              <div className="relative">
+                <Lock
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"
+                  size={20}
+                />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-4 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
+                  required
+                />
+              </div>
+            </div>
+
+            {error && (
+              <div className="text-red-500 text-sm font-medium text-center bg-red-50 py-2 rounded-xl">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-4 bg-[#111] text-white rounded-2xl font-bold text-lg shadow-lg shadow-zinc-900/10 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <Loader2 size={24} className="animate-spin" />
+              ) : (
+                <>
+                  Sign In <ArrowRight size={20} />
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+
+        <div className="text-center mt-8">
+          <p className="text-zinc-500 font-medium">
+            Don't have an account?{" "}
+            <button
+              onClick={onNavigateToSignup}
+              className="text-black font-bold hover:underline"
+            >
+              Create one
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default LoginPage;
