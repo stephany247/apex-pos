@@ -139,7 +139,7 @@ const SalesHistoryView: React.FC = () => {
                             <td className="p-5 align-top">
                                 <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
                                     transaction.paymentMethod === 'Cash' ? 'bg-green-50 text-green-700 border-green-100' :
-                                    transaction.paymentMethod === 'Debit Card' ? 'bg-blue-50 text-blue-700 border-blue-100' :
+                                    transaction.paymentMethod === 'Debit Card' ? 'bg-blue-50 text-blue-700 border-blue-100 whitespace-nowrap' :
                                     'bg-purple-50 text-purple-700 border-purple-100'
                                 }`}>
                                     {transaction.paymentMethod === 'Cash' && <Banknote size={12} />}
