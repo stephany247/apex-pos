@@ -23,10 +23,45 @@ const SignupPage: React.FC<SignupPageProps> = ({ onNavigateToLogin }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password.trim();
+
+    // Required fields
+    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
+      setError("All fields are required");
+      return;
+    }
+
+    // Name validation
+    if (trimmedName.length < 2) {
+      setError("Please enter a valid name");
+      return;
+    }
+
+    // Email validation (extra safety beyond type="email")
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    // Password validation
+    if (trimmedPassword.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    if (!/[A-Za-z]/.test(trimmedPassword) || !/[0-9]/.test(trimmedPassword)) {
+      setError("Password must contain at least one letter and one number");
+      return;
+    }
+
     setIsLoading(true);
     try {
-      await signup(name, email, password);
-    } catch (err) {
+      await signup(trimmedName, trimmedEmail, trimmedPassword);
+    } catch {
       setError("Failed to create account");
     } finally {
       setIsLoading(false);
