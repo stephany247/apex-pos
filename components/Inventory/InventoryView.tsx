@@ -187,7 +187,7 @@ const InventoryView: React.FC = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-[#111] text-white px-5 py-3 rounded-full font-bold shadow-lg shadow-zinc-900/10 hover:shadow-xl hover:scale-105 transition-all flex-shrink-0 ml-auto md:ml-0"
+            className="flex items-center gap-2 bg-[#111] text-white px-3 py-2 rounded-full font-bold shadow-lg shadow-zinc-900/10 hover:shadow-xl transition-all flex-shrink-0 ml-auto md:ml-0"
           >
             <Plus size={18} />
             <span className="hidden sm:inline">Add Product</span>
@@ -195,8 +195,8 @@ const InventoryView: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 h-screen overflow-hidden px-6 pb-6">
-        <div className="rounded-3xl border border-zinc-100 overflow-auto h-screen">
+      <div className="flex-1 min-h-0 overflow-hidden px-6 pb-6">
+        <div className="rounded-3xl border border-zinc-100 overflow-auto max-h-screen h-full">
           <div className="w-full overflow-x-auto">
             <table className="min-w-max w-full text-left border-collapse">
               <thead className="bg-[#F4E6CB] sticky top-0 z-10">
