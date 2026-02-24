@@ -115,29 +115,23 @@ const SalesHistoryView: React.FC = () => {
       </div>
 
       <div className="flex-1 min-h-0 h-screen overflow-hidden px-6 pb-6">
-        <div className="rounded-3xl border border-zinc-100 overflow-auto h-full">
+        <div className="rounded-3xl border border-zinc-100 overflow-auto h-screen">
         
           {/* <div className="w-full overflow-x-auto"> */}
             <table className="w-full min-w-max text-left border-collapse">
-              <thead className="bg-[#F4E6CB]">
-                <tr>
-                  <th className="p-3 font-bold text-zinc-900 text-sm md:whitespace-nowrap">
-                    Transaction ID
-                  </th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">Date</th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">Time</th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">
-                    Items
-                  </th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">Total</th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">
-                    Payment
-                  </th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm text-right">
-                    Action
-                  </th>
-                </tr>
-              </thead>
+              <thead className="bg-[#F4E6CB] sticky top-0 z-10">
+  <tr>
+    <th className="p-3 font-bold text-zinc-900 text-sm whitespace-nowrap">
+      Transaction ID
+    </th>
+    <th className="p-3 font-bold text-zinc-900 text-sm whitespace-nowrap">Date</th>
+    <th className="p-3 font-bold text-zinc-900 text-sm whitespace-nowrap">Time</th>
+    <th className="p-3 font-bold text-zinc-900 text-sm whitespace-nowrap">Items</th>
+    <th className="p-3 font-bold text-zinc-900 text-sm whitespace-nowrap">Total</th>
+    <th className="p-3 font-bold text-zinc-900 text-sm whitespace-nowrap">Payment</th>
+    <th className="p-3 font-bold text-zinc-900 text-sm whitespace-nowrap text-right">Action</th>
+  </tr>
+</thead>
               <tbody className="divide-y divide-zinc-50">
                 {filteredTransactions.map((transaction) => (
                   <tr
