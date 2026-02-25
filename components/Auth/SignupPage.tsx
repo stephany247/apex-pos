@@ -17,7 +17,7 @@ interface SignupPageProps {
 }
 
 const SignupPage: React.FC<SignupPageProps> = ({ onNavigateToLogin }) => {
-  const { signup } = useStore();
+  const { setUser } = useStore();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,13 +28,9 @@ const SignupPage: React.FC<SignupPageProps> = ({ onNavigateToLogin }) => {
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
-      // localStorage.setItem("apex_user", JSON.stringify(data));
-      localStorage.setItem("apex_user", JSON.stringify(data.data.user));
-
+      setUser(data.data.user);
       localStorage.setItem("accessToken", data.data.accessToken);
-
       localStorage.setItem("refreshToken", data.data.refreshToken);
-      // window.location.reload(); // or navigate
     },
     onError: () => {
       setError("Failed to create account");
