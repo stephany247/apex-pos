@@ -8,6 +8,7 @@ interface StoreContextType {
   transactions: Transaction[];
   cart: CartItem[];
   currentUser: User | null;
+  setUser: (user: User) => void;
   addToCart: (product: Product) => void;
   removeFromCart: (cartId: string) => void;
   updateCartQuantity: (cartId: string, delta: number) => void;
@@ -43,6 +44,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
     }
   }, []);
+
+  const setUser = (user: User) => {
+  setCurrentUser(user);
+  localStorage.setItem("apex_user", JSON.stringify(user));
+};
 
   const addToCart = (product: Product) => {
     setCart(prev => {
@@ -200,6 +206,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       transactions,
       cart,
       currentUser,
+      setUser,
       addToCart,
       removeFromCart,
       updateCartQuantity,

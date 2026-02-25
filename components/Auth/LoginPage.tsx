@@ -1,17 +1,31 @@
 import React, { useState } from "react";
-import { useStore } from "../../context/StoreContext";
-import { ArrowRight, Lock, Mail, Loader2 } from "lucide-react";
+import { ArrowRight, Lock, Mail, Loader2, EyeOff, Eye } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "@/api/auth";
+import { useStore } from "@/context/StoreContext";
 
 interface LoginPageProps {
   onNavigateToSignup: () => void;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToSignup }) => {
-  const { login } = useStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = useStore();
+
+  const mutation = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (data) => {
+      setUser(data.data.user);
+      localStorage.setItem("accessToken", data.data.accessToken);
+      localStorage.setItem("refreshToken", data.data.refreshToken);
+    },
+    onError: (error: any) => {
+      setError(error.message);
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,13 +56,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToSignup }) => {
       return;
     }
 
-    setIsLoading(true);
     try {
-      await login(trimmedEmail, trimmedPassword);
+      mutation.mutate({
+        email: trimmedEmail,
+        password: trimmedPassword,
+      });
     } catch {
       setError("Invalid credentials");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -78,6 +92,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToSignup }) => {
                 <input
                   type="email"
                   value={email}
+                  name="email"
+                  autoComplete="email"
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
                   className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-4 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
@@ -90,19 +106,29 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToSignup }) => {
               <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-4">
                 Password
               </label>
+
               <div className="relative">
                 <Lock
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"
                   size={20}
                 />
+
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-4 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
+                  className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-12 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
                   required
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-500 transition"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 
@@ -114,10 +140,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToSignup }) => {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={mutation.isPending}
               className="w-full py-4 bg-[#111] text-white rounded-2xl font-bold text-lg shadow-lg shadow-zinc-900/10 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
+              {mutation.isPending ? (
                 <Loader2 size={24} className="animate-spin" />
               ) : (
                 <>
