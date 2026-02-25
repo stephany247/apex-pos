@@ -36,3 +36,5 @@ export const CURRENT_USER: User = {
   email: 'alex@apex.com',
   role: 'manager'
 };
+
+export const BASE_URL = "https://inventory-hackathon-backend.onrender.com/api";

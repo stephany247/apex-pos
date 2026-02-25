@@ -6,7 +6,11 @@ import {
   Mail,
   User as UserIcon,
   Loader2,
+  Eye,
+  EyeClosed,
 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "@/api/auth";
 
 interface SignupPageProps {
   onNavigateToLogin: () => void;
@@ -19,6 +23,23 @@ const SignupPage: React.FC<SignupPageProps> = ({ onNavigateToLogin }) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn: registerUser,
+    onSuccess: (data) => {
+      // localStorage.setItem("apex_user", JSON.stringify(data));
+      localStorage.setItem("apex_user", JSON.stringify(data.data.user));
+
+      localStorage.setItem("accessToken", data.data.accessToken);
+
+      localStorage.setItem("refreshToken", data.data.refreshToken);
+      // window.location.reload(); // or navigate
+    },
+    onError: () => {
+      setError("Failed to create account");
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,14 +74,32 @@ const SignupPage: React.FC<SignupPageProps> = ({ onNavigateToLogin }) => {
       return;
     }
 
-    if (!/[A-Za-z]/.test(trimmedPassword) || !/[0-9]/.test(trimmedPassword)) {
-      setError("Password must contain at least one letter and one number");
+    if (!/[A-Z]/.test(trimmedPassword)) {
+      setError("Password must contain at least one uppercase letter");
       return;
     }
 
+    if (!/[a-z]/.test(trimmedPassword)) {
+      setError("Password must contain at least one lowercase letter");
+      return;
+    }
+
+    if (!/[0-9]/.test(trimmedPassword)) {
+      setError("Password must contain at least one number");
+      return;
+    }
+
+    if (!/[!@#$%^&*(),.?\":{}|<>]/.test(trimmedPassword)) {
+      setError("Password must contain at least one special character");
+      return;
+    }
     setIsLoading(true);
     try {
-      await signup(trimmedName, trimmedEmail, trimmedPassword);
+      mutation.mutate({
+        name: trimmedName,
+        email: trimmedEmail,
+        password: trimmedPassword,
+      });
     } catch {
       setError("Failed to create account");
     } finally {
@@ -130,19 +169,29 @@ const SignupPage: React.FC<SignupPageProps> = ({ onNavigateToLogin }) => {
               <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-4">
                 Password
               </label>
+
               <div className="relative">
                 <Lock
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"
                   size={20}
                 />
+
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-4 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
+                  className="w-full bg-zinc-50 border-none rounded-2xl py-4 pl-12 pr-12 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
                   required
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-500 transition"
+                >
+                  {showPassword ? <EyeClosed /> : <Eye />}
+                </button>
               </div>
             </div>
 
@@ -154,10 +203,10 @@ const SignupPage: React.FC<SignupPageProps> = ({ onNavigateToLogin }) => {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={mutation.isPending}
               className="w-full py-4 bg-[#111] text-white rounded-2xl font-bold text-lg shadow-lg shadow-zinc-900/10 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
+              {mutation.isPending ? (
                 <Loader2 size={24} className="animate-spin" />
               ) : (
                 <>

@@ -9,6 +9,7 @@ import LoginPage from "./components/Auth/LoginPage";
 import SignupPage from "./components/Auth/SignupPage";
 import { ViewState } from "./types";
 import { Menu, Search } from "lucide-react";
+import { log } from "console";
 
 // Wrapper component to use the hook inside the provider
 const AppContent: React.FC = () => {
@@ -65,6 +66,7 @@ const AppContent: React.FC = () => {
         return "Dashboard";
     }
   };
+console.log("user", currentUser);
 
   return (
     <div className="flex lg:h-screen bg-[#FDF6E9] overflow-hidden">
@@ -112,7 +114,7 @@ const AppContent: React.FC = () => {
                 </p>
               </div>
               <div className="w-10 h-10 rounded-full bg-[#FAE29F] border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-lg font-bold text-[#D97706]">
-                {currentUser.name.charAt(0)}
+                {currentUser?.name?.charAt(0)}
               </div>
             </div>
           </div>
