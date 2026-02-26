@@ -100,7 +100,7 @@ const POSView: React.FC = () => {
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 className={`
-          px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 border
+          px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap capitalize transition-all duration-200 border
           ${
             selectedCategory === cat
               ? "bg-[#111] text-white border-transparent"
@@ -120,7 +120,7 @@ const POSView: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {filteredProducts.map((product) => (
                 <ProductCard
-                  key={product.id}
+                  key={product._id}
                   product={product}
                   onAdd={() => addToCart(product)}
                 />
@@ -130,7 +130,7 @@ const POSView: React.FC = () => {
             <div className="space-y-2">
               {filteredProducts.map((product) => (
                 <ProductListItem
-                  key={product.id}
+                  key={product._id}
                   product={product}
                   onAdd={() => addToCart(product)}
                 />
@@ -197,12 +197,18 @@ export const getCategoryStyles = (category: string) => {
   }
 };
 
+const formatCurrency = (value: number) =>
+  value.toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
 const ProductCard: React.FC<{ product: Product; onAdd: () => void }> = ({
   product,
   onAdd,
 }) => {
-  const isLowStock = product.stock <= product.lowStockThreshold;
-  const isOutOfStock = product.stock === 0;
+  const isLowStock = product.quantity <= product.lowStockAlert;
+  const isOutOfStock = product.quantity === 0;
   const styles = getCategoryStyles(product.category);
 
   return (
@@ -238,12 +244,13 @@ const ProductCard: React.FC<{ product: Product; onAdd: () => void }> = ({
         <p className="text-[10px] text-zinc-500 font-mono mb-2">
           {product.sku}
         </p>
-        <div className="mt-auto flex items-center justify-between">
-          <span className="text-base font-bold text-black">
-            ₦{product.price.toFixed(2)}
+        <div className="mt-auto flex items-center justify-between gap-2">
+          <span className="text-sm font-bold text-black break-words leading-tight">
+            ₦{formatCurrency(product.price)}
           </span>
-          <div className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center group-hover:bg-[#FDE047] group-hover:text-black transition-colors shadow-lg shadow-black/10">
-            <Plus size={16} />
+
+          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center group-hover:bg-[#FDE047] group-hover:text-black transition-colors shadow-lg shadow-black/10">
+            <Plus size={12} />
           </div>
         </div>
       </div>
@@ -269,11 +276,11 @@ const ProductListItem: React.FC<{ product: Product; onAdd: () => void }> = ({
       <div className="flex-1">
         <h3 className="font-bold text-zinc-800 text-sm">{product.name}</h3>
         <p className="text-[10px] text-zinc-500 mt-0.5">
-          {product.sku} • Stock: {product.stock}
+          {product.sku} • Stock: {product.quantity}
         </p>
       </div>
       <span className="text-sm font-bold text-black">
-        ₦{product.price.toFixed(2)}
+        ₦{formatCurrency(product.price)}
       </span>
       <div className="w-8 h-8 rounded-full bg-zinc-100 text-zinc-500 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">
         <Plus size={16} />
