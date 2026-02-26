@@ -17,8 +17,8 @@ import {
   Plus,
 } from "lucide-react";
 import { Product, ProductCategory } from "../../types";
-import { useMutation } from "@tanstack/react-query";
-import { createProduct } from "@/api/products";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createProduct, getProducts } from "@/api/products";
 
 // Helper for category colors and icons
 const getCategoryStyles = (category: string) => {
@@ -63,15 +63,18 @@ const getCategoryStyles = (category: string) => {
 };
 
 const InventoryView: React.FC = () => {
-  const { products, updateProductStock, addProduct } = useStore();
+  const { updateProductStock, addProduct } = useStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState<"all" | "low" | "out">("all");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<number>(0);
   const [selectedDate, setSelectedDate] = useState("");
+
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: createProduct,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       console.log("Product created");
     },
     onError: (error: any) => {
@@ -79,34 +82,37 @@ const InventoryView: React.FC = () => {
     },
   });
 
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["products", searchTerm, filter],
+    queryFn: () =>
+      getProducts({
+        page: 1,
+        limit: 20,
+        search: searchTerm || undefined,
+        stockStatus:
+          filter === "low"
+            ? "lowStock"
+            : filter === "out"
+              ? "soldOut"
+              : undefined,
+      }),
+  });
+
   // Add Product Modal State
   const [showAddModal, setShowAddModal] = useState(false);
   const [newProduct, setNewProduct] = useState<Partial<Product>>({
     category: "Electronics",
-    stock: 0,
+    quantity: 0,
     price: 0,
     cost: 0,
-    lowStockThreshold: 5,
+    lowStockAlert: 5,
   });
 
-  const filteredProducts = products.filter((p) => {
-    const matchesSearch =
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.sku.toLowerCase().includes(searchTerm.toLowerCase());
-
-    // We do NOT filter by date here as per user request.
-    // The table contents remain the same regardless of the date selection.
-
-    if (!matchesSearch) return false;
-
-    if (filter === "low") return p.stock <= p.lowStockThreshold && p.stock > 0;
-    if (filter === "out") return p.stock === 0;
-    return true;
-  });
+  const products = data?.data?.products || [];
 
   const startEdit = (product: Product) => {
     setEditingId(product.id);
-    setEditValue(product.stock);
+    setEditValue(product.quantity);
   };
 
   const saveEdit = (id: string) => {
@@ -128,8 +134,8 @@ const InventoryView: React.FC = () => {
       category: (newProduct.category as ProductCategory) || "Electronics",
       price: Number(newProduct.price),
       cost: Number(newProduct.cost) || 0,
-      stock: Number(newProduct.stock) || 0,
-      lowStockThreshold: Number(newProduct.lowStockThreshold) || 5,
+      quantity: Number(newProduct.quantity) || 0,
+      lowStockAlert: Number(newProduct.lowStockAlert) || 5,
     });
 
     setShowAddModal(false);
@@ -229,7 +235,7 @@ const InventoryView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-50">
-                {filteredProducts.map((product) => {
+                {products.map((product) => {
                   const styles = getCategoryStyles(product.category);
                   return (
                     <tr
@@ -281,7 +287,7 @@ const InventoryView: React.FC = () => {
                               type="number"
                               value={editValue}
                               onChange={(e) =>
-                                setEditValue(parseInt(e.target.value) || 0)
+                                setEditValue(parseInt(e.target.value) || product.quantity||0)
                               }
                               className="w-12 text-center border-none outline-none font-bold text-sm"
                             />
@@ -297,16 +303,16 @@ const InventoryView: React.FC = () => {
                             className={`
                                     inline-flex items-center px-3 py-1 rounded-full text-xs font-bold
                                     ${
-                                      product.stock === 0
+                                      product.quantity === 0
                                         ? "bg-red-100 text-red-800"
-                                        : product.stock <=
-                                            product.lowStockThreshold
+                                        : product.quantity <=
+                                            product.lowStockAlert
                                           ? "bg-[#FDE047] text-black"
                                           : "bg-green-100 text-green-800"
                                     }
                                 `}
                           >
-                            {product.stock}
+                            {product.quantity}
                           </span>
                         )}
                       </td>
@@ -342,7 +348,7 @@ const InventoryView: React.FC = () => {
             </table>
           </div>
         </div>
-        {filteredProducts.length === 0 && (
+        {products.length === 0 && (
           <div className="flex flex-col items-center justify-center h-48 text-zinc-400">
             <PackageCheck size={48} className="mb-4 opacity-20" />
             <p>No products found.</p>
@@ -457,7 +463,8 @@ const InventoryView: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({
                         ...newProduct,
-                        cost: e.target.value === "" ? 0 : Number(e.target.value),
+                        cost:
+                          e.target.value === "" ? 0 : Number(e.target.value),
                       })
                     }
                   />
@@ -474,11 +481,12 @@ const InventoryView: React.FC = () => {
                     type="number"
                     min="0"
                     className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium focus:outline-none focus:ring-2 focus:ring-black"
-                    value={newProduct.stock}
+                    value={newProduct.quantity}
                     onChange={(e) =>
                       setNewProduct({
                         ...newProduct,
-                        stock: e.target.value === "" ? 0 : Number(e.target.value),
+                        quantity:
+                          e.target.value === "" ? 0 : Number(e.target.value),
                       })
                     }
                   />
@@ -492,11 +500,12 @@ const InventoryView: React.FC = () => {
                     type="number"
                     min="0"
                     className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium focus:outline-none focus:ring-2 focus:ring-black"
-                    value={newProduct.lowStockThreshold}
+                    value={newProduct.lowStockAlert}
                     onChange={(e) =>
                       setNewProduct({
                         ...newProduct,
-                        lowStockThreshold: e.target.value === "" ? 0 : Number(e.target.value),
+                        lowStockAlert:
+                          e.target.value === "" ? 0 : Number(e.target.value),
                       })
                     }
                   />

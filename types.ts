@@ -6,10 +6,10 @@ export interface Product {
   category: ProductCategory;
   price: number;
   cost: number;
-  stock: number;
+  quantity: number;
   sku: string;
   barcode?: string;
-  lowStockThreshold: number;
+  lowStockAlert: number;
   lastUpdated?: string;
 }
 
