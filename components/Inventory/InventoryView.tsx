@@ -70,14 +70,14 @@ const InventoryView: React.FC = () => {
   const [editValue, setEditValue] = useState<number>(0);
   const [selectedDate, setSelectedDate] = useState("");
   const mutation = useMutation({
-  mutationFn: createProduct,
-  onSuccess: () => {
-    console.log("Product created");
-  },
-  onError: (error: any) => {
-    console.log(error.message);
-  },
-});
+    mutationFn: createProduct,
+    onSuccess: () => {
+      console.log("Product created");
+    },
+    onError: (error: any) => {
+      console.log(error.message);
+    },
+  });
 
   // Add Product Modal State
   const [showAddModal, setShowAddModal] = useState(false);
@@ -88,7 +88,6 @@ const InventoryView: React.FC = () => {
     cost: 0,
     lowStockThreshold: 5,
   });
-  
 
   const filteredProducts = products.filter((p) => {
     const matchesSearch =
@@ -438,7 +437,8 @@ const InventoryView: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({
                         ...newProduct,
-                        price: parseFloat(e.target.value),
+                        price:
+                          e.target.value === "" ? 0 : Number(e.target.value),
                       })
                     }
                   />
@@ -457,7 +457,7 @@ const InventoryView: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({
                         ...newProduct,
-                        cost: parseFloat(e.target.value),
+                        cost: e.target.value === "" ? 0 : Number(e.target.value),
                       })
                     }
                   />
@@ -478,7 +478,7 @@ const InventoryView: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({
                         ...newProduct,
-                        stock: parseInt(e.target.value),
+                        stock: e.target.value === "" ? 0 : Number(e.target.value),
                       })
                     }
                   />
@@ -496,7 +496,7 @@ const InventoryView: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({
                         ...newProduct,
-                        lowStockThreshold: parseInt(e.target.value),
+                        lowStockThreshold: e.target.value === "" ? 0 : Number(e.target.value),
                       })
                     }
                   />
