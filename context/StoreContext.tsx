@@ -18,6 +18,7 @@ interface StoreContextType {
   removeFromCart: (cartId: string) => void;
   updateCartQuantity: (cartId: string, delta: number) => void;
   clearCart: () => void;
+  getCartQty: (productId: string) => number;
   completeSale: (
     method: "Cash" | "Debit Card" | "Transfer",
     customerId?: string,
@@ -105,6 +106,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const clearCart = () => setCart([]);
+
+  const getCartQty = (productId: string) => {
+    const item = cart.find((c) => c.productId === productId);
+    return item ? item.quantity : 0;
+  };
 
   const completeSale = (
     method: "Cash" | "Debit Card" | "Transfer",
@@ -263,6 +269,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
         removeFromCart,
         updateCartQuantity,
         clearCart,
+        getCartQty,
         completeSale,
         updateProductStock,
         addProduct,
