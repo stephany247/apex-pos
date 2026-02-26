@@ -19,6 +19,7 @@ import {
 import { Product, ProductCategory } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createProduct, getProducts } from "@/api/products";
+import { log } from "console";
 
 // Helper for category colors and icons
 const getCategoryStyles = (category: string) => {
@@ -111,16 +112,16 @@ const InventoryView: React.FC = () => {
   const products = data?.data?.products || [];
 
   const startEdit = (product: Product) => {
-    setEditingId(product.id);
+    setEditingId(product._id);
     setEditValue(product.quantity);
   };
 
-  const saveEdit = (id: string) => {
+  const saveEdit = (_id: string) => {
     // Use selectedDate for timestamp if available, otherwise undefined (current time)
     const timestamp = selectedDate
       ? new Date(selectedDate).toISOString()
       : undefined;
-    updateProductStock(id, editValue, timestamp);
+    updateProductStock(_id, editValue, timestamp);
     setEditingId(null);
   };
 
@@ -239,7 +240,7 @@ const InventoryView: React.FC = () => {
                   const styles = getCategoryStyles(product.category);
                   return (
                     <tr
-                      key={product.id}
+                      key={product._id}
                       className="hover:bg-zinc-50/50 group transition-colors"
                     >
                       <td className="p-3">
@@ -273,7 +274,7 @@ const InventoryView: React.FC = () => {
                         ₦{product.price.toFixed(2)}
                       </td>
                       <td className="p-3 text-center">
-                        {editingId === product.id ? (
+                        {editingId === product._id ? (
                           <div className="flex items-center justify-center gap-2 bg-white shadow-lg p-1 rounded-full border border-zinc-100 inline-flex">
                             <button
                               onClick={() =>
@@ -287,7 +288,11 @@ const InventoryView: React.FC = () => {
                               type="number"
                               value={editValue}
                               onChange={(e) =>
-                                setEditValue(parseInt(e.target.value) || product.quantity||0)
+                                setEditValue(
+                                  parseInt(e.target.value) ||
+                                    product.quantity ||
+                                    0,
+                                )
                               }
                               className="w-12 text-center border-none outline-none font-bold text-sm"
                             />
@@ -317,10 +322,10 @@ const InventoryView: React.FC = () => {
                         )}
                       </td>
                       <td className="p-3 text-right">
-                        {editingId === product.id ? (
+                        {editingId === product._id ? (
                           <div className="flex items-center justify-end gap-2">
                             <button
-                              onClick={() => saveEdit(product.id)}
+                              onClick={() => saveEdit(product._id)}
                               className="p-2 bg-black text-white rounded-full hover:scale-105 transition-transform"
                             >
                               <Save size={16} />

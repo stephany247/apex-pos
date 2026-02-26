@@ -1,7 +1,7 @@
 export type ProductCategory = 'Electronics' | 'Clothing' | 'Groceries' | 'Home' | 'Beauty';
 
 export interface Product {
-  id: string;
+  _id: string;
   name: string;
   category: ProductCategory;
   price: number;
