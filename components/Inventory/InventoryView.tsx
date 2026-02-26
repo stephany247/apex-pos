@@ -112,6 +112,13 @@ const InventoryView: React.FC = () => {
 
   const products = data?.data?.products || [];
 
+  const filteredProducts = selectedDate
+    ? products.filter(
+        (p) =>
+          new Date(p.updatedAt).toISOString().split("T")[0] === selectedDate,
+      )
+    : products;
+
   const startEdit = (product: Product) => {
     setEditingId(product._id);
     setEditValue(product.quantity);
@@ -247,10 +254,14 @@ const InventoryView: React.FC = () => {
           )}
           {!isLoading && !error && (
             <>
-              {products.length === 0 ? (
+              {filteredProducts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-48 text-zinc-400">
                   <PackageCheck size={48} className="mb-4 opacity-80" />
-                  <p>No results found for "{searchTerm}"</p>
+                  <p className="font-medium">
+                    {searchTerm
+                      ? `No results found for "${searchTerm}"`
+                      : "No products available yet."}
+                  </p>
                 </div>
               ) : (
                 <div className="w-full overflow-x-auto">
@@ -278,7 +289,7 @@ const InventoryView: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-50">
-                      {products.map((product) => {
+                      {filteredProducts.map((product) => {
                         const styles = getCategoryStyles(product.category);
                         return (
                           <tr
