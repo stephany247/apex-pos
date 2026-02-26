@@ -149,6 +149,12 @@ const InventoryView: React.FC = () => {
     });
   };
 
+  const formatCurrency = (value: number) =>
+    value.toLocaleString("en-NG", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
   return (
     <div className="flex flex-col h-full bg-white rounded-[2rem] shadow-sm border border-zinc-100 overflow-hidden relative">
       <div className="p-6 flex flex-col md:flex-row gap-4 justify-between items-center">
@@ -271,7 +277,7 @@ const InventoryView: React.FC = () => {
                         </span>
                       </td>
                       <td className="p-3 font-medium text-zinc-800 text-sm">
-                        ₦{product.price.toFixed(2)}
+                       ₦{formatCurrency(product.price)}
                       </td>
                       <td className="p-3 text-center">
                         {editingId === product._id ? (

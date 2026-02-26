@@ -9,7 +9,6 @@ import LoginPage from "./components/Auth/LoginPage";
 import SignupPage from "./components/Auth/SignupPage";
 import { ViewState } from "./types";
 import { Menu, Search } from "lucide-react";
-import { log } from "console";
 
 // Wrapper component to use the hook inside the provider
 const AppContent: React.FC = () => {
