@@ -184,6 +184,7 @@ const InventoryView: React.FC = () => {
             {searchTerm && (
               <button
                 type="button"
+                aria-label="Clear search"
                 onClick={() => setSearchTerm("")}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition"
               >
@@ -194,6 +195,7 @@ const InventoryView: React.FC = () => {
           {/* Date Filter Input */}
           <div className="relative">
             <input
+              aria-label="Filter by date"
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
@@ -204,6 +206,7 @@ const InventoryView: React.FC = () => {
                 onClick={() => setSelectedDate("")}
                 className="absolute right-10 top-1/2 -translate-y-1/2 bg-zinc-200 rounded-full p-0.5 text-zinc-600 hover:text-black hover:bg-zinc-300 transition-colors"
                 title="Clear date"
+                aria-label="Clear selected date"
               >
                 <X size={10} />
               </button>
@@ -332,14 +335,17 @@ const InventoryView: React.FC = () => {
                               {editingId === product._id ? (
                                 <div className="flex items-center justify-center gap-2 bg-white shadow-lg p-1 rounded-full border border-zinc-100 inline-flex">
                                   <button
+                                    type="button"
                                     onClick={() =>
                                       setEditValue(Math.max(0, editValue - 1))
                                     }
+                                    aria-label="Decrease quantity"
                                     className="w-8 h-8 flex items-center justify-center bg-zinc-100 rounded-full hover:bg-zinc-200 font-bold"
                                   >
                                     -
                                   </button>
                                   <input
+                                    aria-label="Edit quantity"
                                     type="number"
                                     value={editValue}
                                     onChange={(e) =>
@@ -352,7 +358,9 @@ const InventoryView: React.FC = () => {
                                     className="w-12 text-center border-none outline-none font-bold text-sm"
                                   />
                                   <button
+                                    type="button"
                                     onClick={() => setEditValue(editValue + 1)}
+                                    aria-label="Increase quantity"
                                     className="w-8 h-8 flex items-center justify-center bg-zinc-100 rounded-full hover:bg-zinc-200 font-bold"
                                   >
                                     +
@@ -380,13 +388,17 @@ const InventoryView: React.FC = () => {
                               {editingId === product._id ? (
                                 <div className="flex items-center justify-end gap-2">
                                   <button
+                                    type="button"
                                     onClick={() => saveEdit(product._id)}
+                                    aria-label="Save changes"
                                     className="p-2 bg-black text-white rounded-full hover:scale-105 transition-transform"
                                   >
                                     <Save size={16} />
                                   </button>
                                   <button
+                                    type="button"
                                     onClick={() => setEditingId(null)}
+                                    aria-label="Cancel editing"
                                     className="p-2 bg-zinc-100 text-zinc-500 rounded-full hover:bg-zinc-200"
                                   >
                                     <X size={16} />
@@ -394,6 +406,8 @@ const InventoryView: React.FC = () => {
                                 </div>
                               ) : (
                                 <button
+                                  type="button"
+                                  aria-label={`Edit stock for ${product.name}`}
                                   onClick={() => startEdit(product)}
                                   className="p-2 text-zinc-300 hover:text-black hover:bg-zinc-100 rounded-full transition-all"
                                 >
@@ -422,6 +436,8 @@ const InventoryView: React.FC = () => {
                 Add New Product
               </h3>
               <button
+                type="button"
+                aria-label="Close add product form"
                 onClick={() => setShowAddModal(false)}
                 className="p-2 hover:bg-zinc-100 rounded-full transition-colors"
               >
@@ -467,6 +483,7 @@ const InventoryView: React.FC = () => {
                     Category
                   </label>
                   <select
+                    aria-label="Product category"
                     className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium focus:outline-none focus:ring-2 focus:ring-black appearance-none"
                     value={newProduct.category}
                     onChange={(e) =>
@@ -487,12 +504,16 @@ const InventoryView: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-zinc-700 ml-1">
+                  <label
+                    htmlFor="price"
+                    className="text-sm font-bold text-zinc-700 ml-1"
+                  >
                     Price (₦)
                   </label>
                   <input
                     required
                     type="number"
+                    id="price"
                     min="0"
                     step="0.01"
                     className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium focus:outline-none focus:ring-2 focus:ring-black"
@@ -507,12 +528,16 @@ const InventoryView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-zinc-700 ml-1">
+                  <label
+                    htmlFor="cost"
+                    className="text-sm font-bold text-zinc-700 ml-1"
+                  >
                     Cost (₦)
                   </label>
                   <input
                     required
                     type="number"
+                    id="cost"
                     min="0"
                     step="0.01"
                     className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium focus:outline-none focus:ring-2 focus:ring-black"
@@ -530,12 +555,16 @@ const InventoryView: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-zinc-700 ml-1">
+                  <label
+                    htmlFor="quantity"
+                    className="text-sm font-bold text-zinc-700 ml-1"
+                  >
                     Initial Stock
                   </label>
                   <input
                     required
                     type="number"
+                    id="quantity"
                     min="0"
                     className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium focus:outline-none focus:ring-2 focus:ring-black"
                     value={newProduct.quantity}
@@ -549,12 +578,16 @@ const InventoryView: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-zinc-700 ml-1">
+                  <label
+                    htmlFor="lowStockAlert"
+                    className="text-sm font-bold text-zinc-700 ml-1"
+                  >
                     Low Stock Alert
                   </label>
                   <input
                     required
                     type="number"
+                    id="lowStockAlert"
                     min="0"
                     className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium focus:outline-none focus:ring-2 focus:ring-black"
                     value={newProduct.lowStockAlert}
