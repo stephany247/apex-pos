@@ -8,6 +8,8 @@ const ProductListItem: React.FC<{ product: Product; onAdd: () => void }> = ({
   onAdd,
 }) => {
   const styles = getCategoryStyles(product.category);
+  const Icon = styles.icon;
+
   return (
     <button
       onClick={onAdd}
@@ -16,7 +18,10 @@ const ProductListItem: React.FC<{ product: Product; onAdd: () => void }> = ({
       <div
         className={`w-12 h-12 rounded-2xl ${styles.bg} ${styles.text} flex items-center justify-center`}
       >
-        {React.cloneElement(styles.icon as React.ReactElement, { size: 20 })}
+        {/* {React.cloneElement(styles.icon as React.ReactElement, { size: 20 })} */}
+        <div className={`${styles.bg} ${styles.text}`}>
+          <Icon size={24} />
+        </div>
       </div>
       <div className="flex-1">
         <h3 className="font-bold text-zinc-800 text-sm">{product.name}</h3>
