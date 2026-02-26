@@ -164,13 +164,24 @@ const InventoryView: React.FC = () => {
               className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"
               size={20}
             />
+
             <input
               type="text"
               placeholder="Search inventory..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-zinc-50 border-none rounded-full focus:ring-2 focus:ring-black outline-none font-medium"
+              className="w-full pl-11 pr-10 py-3 bg-zinc-50 border-none rounded-full focus:ring-2 focus:ring-black outline-none font-medium"
             />
+
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition"
+              >
+                <X size={18} />
+              </button>
+            )}
           </div>
           {/* Date Filter Input */}
           <div className="relative">
@@ -277,7 +288,7 @@ const InventoryView: React.FC = () => {
                         </span>
                       </td>
                       <td className="p-3 font-medium text-zinc-800 text-sm">
-                       ₦{formatCurrency(product.price)}
+                        ₦{formatCurrency(product.price)}
                       </td>
                       <td className="p-3 text-center">
                         {editingId === product._id ? (
