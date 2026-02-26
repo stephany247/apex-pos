@@ -17,6 +17,8 @@ import {
   Plus,
 } from "lucide-react";
 import { Product, ProductCategory } from "../../types";
+import { useMutation } from "@tanstack/react-query";
+import { createProduct } from "@/api/products";
 
 // Helper for category colors and icons
 const getCategoryStyles = (category: string) => {
@@ -67,6 +69,15 @@ const InventoryView: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<number>(0);
   const [selectedDate, setSelectedDate] = useState("");
+  const mutation = useMutation({
+  mutationFn: createProduct,
+  onSuccess: () => {
+    console.log("Product created");
+  },
+  onError: (error: any) => {
+    console.log(error.message);
+  },
+});
 
   // Add Product Modal State
   const [showAddModal, setShowAddModal] = useState(false);
@@ -77,6 +88,7 @@ const InventoryView: React.FC = () => {
     cost: 0,
     lowStockThreshold: 5,
   });
+  
 
   const filteredProducts = products.filter((p) => {
     const matchesSearch =
@@ -111,7 +123,7 @@ const InventoryView: React.FC = () => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.sku || !newProduct.price) return;
 
-    addProduct({
+    mutation.mutate({
       name: newProduct.name,
       sku: newProduct.sku,
       category: (newProduct.category as ProductCategory) || "Electronics",
