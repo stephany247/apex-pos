@@ -18,13 +18,25 @@ import {
 import { useStore } from "../../context/StoreContext";
 import { Product } from "../../types";
 import Cart from "./Cart";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts } from "@/api/products";
 
 const POSView: React.FC = () => {
-  const { products, addToCart } = useStore();
+  const { addToCart } = useStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["products"],
+    queryFn: () =>
+      getProducts({
+        page: 1,
+        limit: 100,
+      }),
+  });
+
+  const products = data?.data?.products || [];
   const categories = [
     "All",
     ...Array.from(new Set(products.map((p) => p.category))),
@@ -83,11 +95,11 @@ const POSView: React.FC = () => {
 
           {/* Categories */}
           <div className="w-full flex flex-wrap gap-2 overflow-x-auto">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`
           px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 border
           ${
             selectedCategory === cat
@@ -95,11 +107,11 @@ const POSView: React.FC = () => {
               : "bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:border-zinc-300"
           }
         `}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Product Grid/List */}

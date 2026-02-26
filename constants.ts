@@ -1,18 +1,18 @@
 import { Product, Customer, Transaction, User } from './types';
 
 export const MOCK_PRODUCTS: Product[] = [
-  { id: '1', name: 'Premium Cotton T-Shirt', category: 'Clothing', price: 25.00, cost: 8.00, stock: 120, sku: 'TSH-001', lowStockThreshold: 20, lastUpdated: '2023-10-20T10:00:00.000Z' },
-  { id: '2', name: 'Wireless Noise Cancelling Headphones', category: 'Electronics', price: 299.99, cost: 150.00, stock: 15, sku: 'AUD-005', lowStockThreshold: 5, lastUpdated: '2023-10-21T14:30:00.000Z' },
-  { id: '3', name: 'Organic Coffee Beans (1lb)', category: 'Groceries', price: 18.50, cost: 9.00, stock: 45, sku: 'GRO-102', lowStockThreshold: 10, lastUpdated: '2023-10-22T09:15:00.000Z' },
-  { id: '4', name: 'Smart Fitness Watch', category: 'Electronics', price: 149.00, cost: 80.00, stock: 8, sku: 'WTC-009', lowStockThreshold: 10, lastUpdated: '2023-10-23T11:20:00.000Z' },
-  { id: '5', name: 'Ceramic Vase Set', category: 'Home', price: 45.00, cost: 15.00, stock: 32, sku: 'HOM-221', lowStockThreshold: 8, lastUpdated: '2023-10-20T16:45:00.000Z' },
-  { id: '6', name: 'Aloe Vera Moisturizer', category: 'Beauty', price: 22.00, cost: 6.50, stock: 65, sku: 'BEA-011', lowStockThreshold: 15, lastUpdated: '2023-10-24T13:10:00.000Z' },
-  { id: '7', name: 'Slim Fit Jeans', category: 'Clothing', price: 55.00, cost: 20.00, stock: 40, sku: 'JNS-003', lowStockThreshold: 12, lastUpdated: '2023-10-22T10:05:00.000Z' },
-  { id: '8', name: 'Mechanical Keyboard', category: 'Electronics', price: 120.00, cost: 70.00, stock: 22, sku: 'KEY-099', lowStockThreshold: 10, lastUpdated: '2023-10-25T09:30:00.000Z' },
-  { id: '9', name: 'Bluetooth Speaker', category: 'Electronics', price: 65.00, cost: 30.00, stock: 5, sku: 'SPK-101', lowStockThreshold: 10, lastUpdated: '2023-10-21T15:20:00.000Z' },
-  { id: '10', name: 'Running Sneakers', category: 'Clothing', price: 89.99, cost: 35.00, stock: 28, sku: 'SHS-555', lowStockThreshold: 15, lastUpdated: '2023-10-23T12:00:00.000Z' },
-  { id: '11', name: 'Almond Milk (1L)', category: 'Groceries', price: 4.50, cost: 2.00, stock: 150, sku: 'GRO-501', lowStockThreshold: 30, lastUpdated: '2023-10-25T08:45:00.000Z' },
-  { id: '12', name: 'LED Desk Lamp', category: 'Home', price: 35.00, cost: 12.00, stock: 44, sku: 'LMP-303', lowStockThreshold: 10, lastUpdated: '2023-10-24T17:30:00.000Z' },
+  { _id: '1', name: 'Premium Cotton T-Shirt', category: 'Clothing', price: 25.00, cost: 8.00, quantity: 120, sku: 'TSH-001', lowStockAlert: 20, lastUpdated: '2023-10-20T10:00:00.000Z' },
+  { _id: '2', name: 'Wireless Noise Cancelling Headphones', category: 'Electronics', price: 299.99, cost: 150.00, quantity: 15, sku: 'AUD-005', lowStockAlert: 5, lastUpdated: '2023-10-21T14:30:00.000Z' },
+  { _id: '3', name: 'Organic Coffee Beans (1lb)', category: 'Groceries', price: 18.50, cost: 9.00, quantity: 45, sku: 'GRO-102', lowStockAlert: 10, lastUpdated: '2023-10-22T09:15:00.000Z' },
+  { _id: '4', name: 'Smart Fitness Watch', category: 'Electronics', price: 149.00, cost: 80.00, quantity: 8, sku: 'WTC-009', lowStockAlert: 10, lastUpdated: '2023-10-23T11:20:00.000Z' },
+  { _id: '5', name: 'Ceramic Vase Set', category: 'Home', price: 45.00, cost: 15.00, quantity: 32, sku: 'HOM-221', lowStockAlert: 8, lastUpdated: '2023-10-20T16:45:00.000Z' },
+  { _id: '6', name: 'Aloe Vera Moisturizer', category: 'Beauty', price: 22.00, cost: 6.50, quantity: 65, sku: 'BEA-011', lowStockAlert: 15, lastUpdated: '2023-10-24T13:10:00.000Z' },
+  { _id: '7', name: 'Slim Fit Jeans', category: 'Clothing', price: 55.00, cost: 20.00, quantity: 40, sku: 'JNS-003', lowStockAlert: 12, lastUpdated: '2023-10-22T10:05:00.000Z' },
+  { _id: '8', name: 'Mechanical Keyboard', category: 'Electronics', price: 120.00, cost: 70.00, quantity: 22, sku: 'KEY-099', lowStockAlert: 10, lastUpdated: '2023-10-25T09:30:00.000Z' },
+  { _id: '9', name: 'Bluetooth Speaker', category: 'Electronics', price: 65.00, cost: 30.00, quantity: 5, sku: 'SPK-101', lowStockAlert: 10, lastUpdated: '2023-10-21T15:20:00.000Z' },
+  { _id: '10', name: 'Running Sneakers', category: 'Clothing', price: 89.99, cost: 35.00, quantity: 28, sku: 'SHS-555', lowStockAlert: 15, lastUpdated: '2023-10-23T12:00:00.000Z' },
+  { _id: '11', name: 'Almond Milk (1L)', category: 'Groceries', price: 4.50, cost: 2.00, quantity: 150, sku: 'GRO-501', lowStockAlert: 30, lastUpdated: '2023-10-25T08:45:00.000Z' },
+  { _id: '12', name: 'LED Desk Lamp', category: 'Home', price: 35.00, cost: 12.00, quantity: 44, sku: 'LMP-303', lowStockAlert: 10, lastUpdated: '2023-10-24T17:30:00.000Z' },
 ];
 
 export const MOCK_CUSTOMERS: Customer[] = [
