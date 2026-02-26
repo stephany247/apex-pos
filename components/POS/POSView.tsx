@@ -74,19 +74,27 @@ const POSView: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-11 pr-12 py-3 bg-zinc-50 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-[#111] transition-all placeholder:text-zinc-400 text-zinc-800 font-medium"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 bg-white rounded-full text-zinc-400 hover:text-black hover:shadow-md transition-all">
+              <button
+                type="button"
+                aria-label="Scan barcode"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 bg-white rounded-full text-zinc-400 hover:text-black hover:shadow-md transition-all"
+              >
                 <ScanBarcode size={18} />
               </button>
             </div>
 
             <div className="flex bg-zinc-50 rounded-full p-1 gap-1">
               <button
+                type="button"
+                aria-label="Grid view"
                 onClick={() => setViewMode("grid")}
                 className={`p-2.5 rounded-full transition-all ${viewMode === "grid" ? "bg-white shadow-md text-black" : "text-zinc-400 hover:text-zinc-600"}`}
               >
                 <Grid size={18} />
               </button>
               <button
+                type="button"
+                aria-label="List view"
                 onClick={() => setViewMode("list")}
                 className={`p-2.5 rounded-full transition-all ${viewMode === "list" ? "bg-white shadow-md text-black" : "text-zinc-400 hover:text-zinc-600"}`}
               >
@@ -156,6 +164,5 @@ const POSView: React.FC = () => {
     </div>
   );
 };
-
 
 export default POSView;
