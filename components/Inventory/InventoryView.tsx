@@ -15,6 +15,7 @@ import {
   Home,
   Sparkles,
   Plus,
+  Loader2,
 } from "lucide-react";
 import { Product, ProductCategory } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -194,7 +195,7 @@ const InventoryView: React.FC = () => {
             {selectedDate && (
               <button
                 onClick={() => setSelectedDate("")}
-                className="absolute right-8 top-1/2 -translate-y-1/2 bg-zinc-200 rounded-full p-1 text-zinc-600 hover:text-black hover:bg-zinc-300 transition-colors"
+                className="absolute right-10 top-1/2 -translate-y-1/2 bg-zinc-200 rounded-full p-0.5 text-zinc-600 hover:text-black hover:bg-zinc-300 transition-colors"
                 title="Clear date"
               >
                 <X size={10} />
@@ -232,97 +233,123 @@ const InventoryView: React.FC = () => {
 
       <div className="flex-1 min-h-0 overflow-hidden px-6 pb-6">
         <div className="rounded-3xl border border-zinc-100 overflow-auto max-h-screen h-full">
-          <div className="w-full overflow-x-auto">
-            <table className="min-w-max w-full text-left border-collapse">
-              <thead className="bg-[#F4E6CB] sticky top-0 z-10">
-                <tr>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">
-                    Product
-                  </th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">
-                    SKU / Last Updated
-                  </th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">
-                    Category
-                  </th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">Price</th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">Stock</th>
-                  <th className="p-3 font-bold text-zinc-900 text-sm">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-50">
-                {products.map((product) => {
-                  const styles = getCategoryStyles(product.category);
-                  return (
-                    <tr
-                      key={product._id}
-                      className="hover:bg-zinc-50/50 group transition-colors"
-                    >
-                      <td className="p-3">
-                        <div className="flex items-center gap-4">
-                          <div
-                            className={`w-12 h-12 rounded-xl ${styles.bg} ${styles.text} flex items-center justify-center`}
+          {isLoading && (
+            <div className="flex flex-col gap-3 items-center justify-center h-48 text-zinc-500 font-medium">
+              <Loader2 className="animate-spin" size={36} />
+              Loading products...
+            </div>
+          )}
+
+          {error && (
+            <div className="flex items-center justify-center h-48 text-red-500 font-medium">
+              Failed to load products.
+            </div>
+          )}
+          {!isLoading && !error && (
+            <>
+              {products.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-48 text-zinc-400">
+                  <PackageCheck size={48} className="mb-4 opacity-80" />
+                  <p>No results found for "{searchTerm}"</p>
+                </div>
+              ) : (
+                <div className="w-full overflow-x-auto">
+                  <table className="min-w-max w-full text-left border-collapse">
+                    <thead className="bg-[#F4E6CB] sticky top-0 z-10">
+                      <tr>
+                        <th className="p-3 font-bold text-zinc-900 text-sm">
+                          Product
+                        </th>
+                        <th className="p-3 font-bold text-zinc-900 text-sm">
+                          SKU / Last Updated
+                        </th>
+                        <th className="p-3 font-bold text-zinc-900 text-sm">
+                          Category
+                        </th>
+                        <th className="p-3 font-bold text-zinc-900 text-sm">
+                          Price
+                        </th>
+                        <th className="p-3 font-bold text-zinc-900 text-sm">
+                          Stock
+                        </th>
+                        <th className="p-3 font-bold text-zinc-900 text-sm">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-50">
+                      {products.map((product) => {
+                        const styles = getCategoryStyles(product.category);
+                        return (
+                          <tr
+                            key={product._id}
+                            className="hover:bg-zinc-50/50 group transition-colors"
                           >
-                            {styles.icon}
-                          </div>
-                          <span className="font-bold text-zinc-800 text-sm max-w-48 block">
-                            {product.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        <div className="text-zinc-500 font-mono text-xs font-bold">
-                          {product.sku}
-                        </div>
-                        {product.lastUpdated && (
-                          <div className="text-xs text-zinc-400 mt-1">
-                            {new Date(product.lastUpdated).toLocaleDateString()}
-                          </div>
-                        )}
-                      </td>
-                      <td className="p-3">
-                        <span className="px-3 py-1 bg-zinc-100 rounded-full text-xs font-bold text-zinc-600">
-                          {product.category}
-                        </span>
-                      </td>
-                      <td className="p-3 font-medium text-zinc-800 text-sm">
-                        ₦{formatCurrency(product.price)}
-                      </td>
-                      <td className="p-3 text-center">
-                        {editingId === product._id ? (
-                          <div className="flex items-center justify-center gap-2 bg-white shadow-lg p-1 rounded-full border border-zinc-100 inline-flex">
-                            <button
-                              onClick={() =>
-                                setEditValue(Math.max(0, editValue - 1))
-                              }
-                              className="w-8 h-8 flex items-center justify-center bg-zinc-100 rounded-full hover:bg-zinc-200 font-bold"
-                            >
-                              -
-                            </button>
-                            <input
-                              type="number"
-                              value={editValue}
-                              onChange={(e) =>
-                                setEditValue(
-                                  parseInt(e.target.value) ||
-                                    product.quantity ||
-                                    0,
-                                )
-                              }
-                              className="w-12 text-center border-none outline-none font-bold text-sm"
-                            />
-                            <button
-                              onClick={() => setEditValue(editValue + 1)}
-                              className="w-8 h-8 flex items-center justify-center bg-zinc-100 rounded-full hover:bg-zinc-200 font-bold"
-                            >
-                              +
-                            </button>
-                          </div>
-                        ) : (
-                          <span
-                            className={`
+                            <td className="p-3">
+                              <div className="flex items-center gap-4">
+                                <div
+                                  className={`w-12 h-12 rounded-xl ${styles.bg} ${styles.text} flex items-center justify-center`}
+                                >
+                                  {styles.icon}
+                                </div>
+                                <span className="font-bold text-zinc-800 text-sm max-w-48 block">
+                                  {product.name}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="p-3">
+                              <div className="text-zinc-500 font-mono text-xs font-bold">
+                                {product.sku}
+                              </div>
+                              {product.lastUpdated && (
+                                <div className="text-xs text-zinc-400 mt-1">
+                                  {new Date(
+                                    product.lastUpdated,
+                                  ).toLocaleDateString()}
+                                </div>
+                              )}
+                            </td>
+                            <td className="p-3">
+                              <span className="px-3 py-1 bg-zinc-100 rounded-full text-xs font-bold text-zinc-600">
+                                {product.category}
+                              </span>
+                            </td>
+                            <td className="p-3 font-medium text-zinc-800 text-sm">
+                              ₦{formatCurrency(product.price)}
+                            </td>
+                            <td className="p-3 text-center">
+                              {editingId === product._id ? (
+                                <div className="flex items-center justify-center gap-2 bg-white shadow-lg p-1 rounded-full border border-zinc-100 inline-flex">
+                                  <button
+                                    onClick={() =>
+                                      setEditValue(Math.max(0, editValue - 1))
+                                    }
+                                    className="w-8 h-8 flex items-center justify-center bg-zinc-100 rounded-full hover:bg-zinc-200 font-bold"
+                                  >
+                                    -
+                                  </button>
+                                  <input
+                                    type="number"
+                                    value={editValue}
+                                    onChange={(e) =>
+                                      setEditValue(
+                                        parseInt(e.target.value) ||
+                                          product.quantity ||
+                                          0,
+                                      )
+                                    }
+                                    className="w-12 text-center border-none outline-none font-bold text-sm"
+                                  />
+                                  <button
+                                    onClick={() => setEditValue(editValue + 1)}
+                                    className="w-8 h-8 flex items-center justify-center bg-zinc-100 rounded-full hover:bg-zinc-200 font-bold"
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              ) : (
+                                <span
+                                  className={`
                                     inline-flex items-center px-3 py-1 rounded-full text-xs font-bold
                                     ${
                                       product.quantity === 0
@@ -333,49 +360,46 @@ const InventoryView: React.FC = () => {
                                           : "bg-green-100 text-green-800"
                                     }
                                 `}
-                          >
-                            {product.quantity}
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-3 text-right">
-                        {editingId === product._id ? (
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => saveEdit(product._id)}
-                              className="p-2 bg-black text-white rounded-full hover:scale-105 transition-transform"
-                            >
-                              <Save size={16} />
-                            </button>
-                            <button
-                              onClick={() => setEditingId(null)}
-                              className="p-2 bg-zinc-100 text-zinc-500 rounded-full hover:bg-zinc-200"
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => startEdit(product)}
-                            className="p-2 text-zinc-300 hover:text-black hover:bg-zinc-100 rounded-full transition-all"
-                          >
-                            <Pencil size={18} />
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                                >
+                                  {product.quantity}
+                                </span>
+                              )}
+                            </td>
+                            <td className="p-3 text-right">
+                              {editingId === product._id ? (
+                                <div className="flex items-center justify-end gap-2">
+                                  <button
+                                    onClick={() => saveEdit(product._id)}
+                                    className="p-2 bg-black text-white rounded-full hover:scale-105 transition-transform"
+                                  >
+                                    <Save size={16} />
+                                  </button>
+                                  <button
+                                    onClick={() => setEditingId(null)}
+                                    className="p-2 bg-zinc-100 text-zinc-500 rounded-full hover:bg-zinc-200"
+                                  >
+                                    <X size={16} />
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => startEdit(product)}
+                                  className="p-2 text-zinc-300 hover:text-black hover:bg-zinc-100 rounded-full transition-all"
+                                >
+                                  <Pencil size={18} />
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
+          )}
         </div>
-        {products.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-48 text-zinc-400">
-            <PackageCheck size={48} className="mb-4 opacity-20" />
-            <p>No products found.</p>
-          </div>
-        )}
       </div>
 
       {/* Add Product Modal */}
