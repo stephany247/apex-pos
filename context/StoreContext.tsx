@@ -92,14 +92,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateCartQuantity = (cartId: string, delta: number) => {
     setCart((prev) =>
-      prev.map((item) => {
-        if (item.cartId === cartId) {
-          const newQty = Math.max(1, item.quantity + delta);
-          // Check stock limit logic could go here
-          return { ...item, quantity: newQty };
-        }
-        return item;
-      }),
+      prev
+        .map((item) => {
+          if (item.cartId === cartId) {
+            const newQty = item.quantity + delta;
+            return { ...item, quantity: newQty };
+          }
+          return item;
+        })
+        .filter((item) => item.quantity > 0),
     );
   };
 
@@ -189,7 +190,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
   const addProduct = (productData: Omit<Product, "id">) => {
     const newProduct: Product = {
       ...productData,
-      id: Math.random().toString(36).substr(2, 9),
+      _id: Math.random().toString(36).substr(2, 9),
       lastUpdated: new Date().toISOString(),
     };
     setProducts((prev) => [...prev, newProduct]);
