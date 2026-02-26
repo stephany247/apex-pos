@@ -52,8 +52,8 @@ const ProductCard: React.FC<{ product: Product; onAdd: () => void }> = ({
             ₦{formatCurrency(product.price)}
           </span>
 
-          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center group-hover:bg-[#FDE047] group-hover:text-black transition-colors shadow-lg shadow-black/10">
-            <Plus size={12} />
+          <div className="flex-shrink-0 w-7 h-7 sm:w-6 sm:h-6 rounded-full bg-black text-white flex items-center justify-center group-hover:bg-[#FDE047] group-hover:text-black transition-colors shadow-lg shadow-black/10">
+            <Plus size={16} className="sm:w-4 sm:h-4" />
           </div>
         </div>
       </div>
