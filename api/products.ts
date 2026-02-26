@@ -1,9 +1,10 @@
 import { BASE_URL } from "@/constants";
+import { authFetch } from "./auth";
 
 export const createProduct = async (product: any) => {
   const token = localStorage.getItem("accessToken");
 
-  const response = await fetch(`${BASE_URL}/products`, {
+  const response = await authFetch(`${BASE_URL}/products`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
