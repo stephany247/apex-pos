@@ -17,3 +17,13 @@ export const createSale = async (data: any) => {
 
     return result;
 };
+
+export const getSales = async () => {
+  const response = await authFetch(`${BASE_URL}/sales`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch transactions");
+  }
+
+  return response.json();
+};
