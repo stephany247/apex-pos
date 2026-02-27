@@ -36,7 +36,7 @@ const ProductListItem: React.FC<{ product: Product; onAdd: () => void }> = ({
         </div>
       </div>
       <div className="flex-1">
-        <h3 className="font-bold text-zinc-800 text-sm">{product.name}</h3>
+        <h3 className="font-bold text-zinc-800 text-sm capitalize">{product.name}</h3>
         <p className="text-[10px] text-zinc-500 mt-0.5">
           {product.sku} • Stock: {product.quantity}
         </p>

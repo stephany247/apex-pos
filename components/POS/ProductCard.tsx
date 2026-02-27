@@ -41,7 +41,7 @@ const ProductCard: React.FC<{ product: Product; onAdd: () => void }> = ({
         )}
       </div>
       <div className="flex flex-col flex-1 px-1">
-        <h3 className="font-bold text-zinc-800 leading-snug line-clamp-2 mb-1 group-hover:text-black text-sm">
+        <h3 className="font-bold text-zinc-800 leading-snug line-clamp-2 capitalize mb-1 group-hover:text-black text-sm">
           {product.name}
         </h3>
         <p className="text-[10px] text-zinc-500 font-mono mb-2">
