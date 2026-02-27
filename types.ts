@@ -15,7 +15,7 @@ export interface Product {
 
 export interface CartItem extends Product {
   cartId: string;
-  quantity: number;
+  // quantity: number;
   discount?: number;
 }
 

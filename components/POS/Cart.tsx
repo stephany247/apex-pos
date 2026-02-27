@@ -23,6 +23,7 @@ import {
 import { useStore } from "../../context/StoreContext";
 import { Transaction } from "../../types";
 import { formatCurrency } from "@/utils";
+import { createSale } from "@/api/sales";
 
 // Helper for icons (duplicate simple logic or import if shared)
 const getCategoryIcon = (category: string) => {
@@ -74,7 +75,7 @@ const Cart: React.FC = () => {
     "method",
   );
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
-    "Cash" | "Debit Card" | "Transfer" | null
+    "Cash" | "Card" | "Transfer" | null
   >(null);
 
   // Receipt State
@@ -89,20 +90,37 @@ const Cart: React.FC = () => {
   );
   const total = subtotal;
 
-  const handleMethodSelect = (method: "Cash" | "Debit Card" | "Transfer") => {
+  const handleMethodSelect = (method: "Cash" | "Card" | "Transfer") => {
     setSelectedPaymentMethod(method);
     setPaymentStep("confirm");
   };
 
-  const handleFinalizePayment = () => {
-    if (selectedPaymentMethod) {
-      const transaction = completeSale(selectedPaymentMethod, undefined);
-      setLastTransaction(transaction);
-      setShowPayment(false);
-      setPaymentStep("method");
-      setSelectedPaymentMethod(null);
-      setShowReceipt(true);
-    }
+  const handleFinalizePayment = async () => {
+    if (!selectedPaymentMethod) return;
+
+    const now = new Date();
+
+    const saleItems = cart.map((item) => ({
+      productId: item._id, // make sure this is _id
+      name: item.name,
+      quantity: item.quantity,
+      unitPrice: item.price,
+    }));
+
+    await createSale({
+      items: saleItems,
+      payment: selectedPaymentMethod.toLowerCase(), // important
+      date: now.toISOString().split("T")[0], // YYYY-MM-DD
+      time: now.toTimeString().slice(0, 5), // HH:mm
+    });
+
+    const transaction = completeSale(selectedPaymentMethod, undefined);
+
+    setLastTransaction(transaction);
+    setShowPayment(false);
+    setPaymentStep("method");
+    setSelectedPaymentMethod(null);
+    setShowReceipt(true);
   };
 
   const handleClosePayment = () => {
@@ -258,7 +276,7 @@ const Cart: React.FC = () => {
                     icon={<CreditCard size={24} />}
                     title="Debit Card"
                     subtitle="Visa, Mastercard, Verve"
-                    onClick={() => handleMethodSelect("Debit Card")}
+                    onClick={() => handleMethodSelect("Card")}
                     color="bg-[#E6F0FF] text-blue-700"
                   />
                   <PaymentOption
@@ -390,10 +408,10 @@ const Cart: React.FC = () => {
                     <span className="font-bold">{item.name}</span>
                     <div className="flex justify-between pl-4 text-zinc-500">
                       <span>
-                        {item.quantity} x {item.price.toFixed(2)}
+                        {item.quantity} x ₦{formatCurrency(item.price)}
                       </span>
                       <span className="text-zinc-800 font-semibold">
-                        {(item.quantity * item.price).toFixed(2)}
+                        ₦{formatCurrency(item.quantity * item.price)}
                       </span>
                     </div>
                   </div>
@@ -405,17 +423,17 @@ const Cart: React.FC = () => {
               <div className="space-y-1 text-base">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>₦{lastTransaction.subtotal.toFixed(2)}</span>
+                  <span>₦{formatCurrency(lastTransaction.subtotal)}</span>
                 </div>
                 {lastTransaction.discount > 0 && (
                   <div className="flex justify-between text-red-500">
                     <span>Discount</span>
-                    <span>-₦{lastTransaction.discount.toFixed(2)}</span>
+                    <span>-₦{formatCurrency(lastTransaction.discount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-xl mt-2">
                   <span>TOTAL</span>
-                  <span>₦{lastTransaction.total.toFixed(2)}</span>
+                  <span>₦{formatCurrency(lastTransaction.total)}</span>
                 </div>
               </div>
 
@@ -423,7 +441,7 @@ const Cart: React.FC = () => {
 
               <div className="text-center space-y-2">
                 <div className="flex justify-center items-center gap-2 text-sm font-bold bg-zinc-100 py-1 rounded">
-                  <span>Payment: {lastTransaction.paymentMethod}</span>
+                  <span>Payment Method: {lastTransaction.paymentMethod}</span>
                 </div>
                 <p className="text-xs mt-4">Thank you for shopping with us!</p>
                 <p className="text-xs">Please keep this receipt for returns.</p>
