@@ -101,7 +101,7 @@ const Cart: React.FC = () => {
     const now = new Date();
 
     const saleItems = cart.map((item) => ({
-      productId: item._id, // make sure this is _id
+      productId: item.productId, // make sure this is _id
       name: item.name,
       quantity: item.quantity,
       unitPrice: item.price,
@@ -310,7 +310,7 @@ const Cart: React.FC = () => {
                     Total Amount
                   </p>
                   <div className="text-4xl font-bold text-zinc-900 tracking-tight mb-4">
-                    ₦{total.toFixed(2)}
+                    ₦{formatCurrency(total)}
                   </div>
 
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-zinc-200 rounded-full shadow-sm">
@@ -339,7 +339,7 @@ const Cart: React.FC = () => {
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-zinc-500">Subtotal</span>
                     <span className="font-semibold text-zinc-900">
-                      ₦{subtotal.toFixed(2)}
+                      ₦{formatCurrency(subtotal)}
                     </span>
                   </div>
                 </div>

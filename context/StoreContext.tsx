@@ -68,20 +68,25 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addToCart = (product: Product) => {
     setCart((prev) => {
-      const existing = prev.find((item) => item.id === product._id);
+      const existing = prev.find((item) => item.productId === product._id);
+
       if (existing) {
         return prev.map((item) =>
-          item.id === product._id
+          item.productId === product._id
             ? { ...item, quantity: item.quantity + 1 }
             : item,
         );
       }
+
       return [
         ...prev,
         {
-          ...product,
-          cartId: Math.random().toString(36).substr(2, 9),
+          cartId: crypto.randomUUID(),
+          productId: product._id,
+          name: product.name,
+          price: product.price,
           quantity: 1,
+          category: product.category,
         },
       ];
     });
