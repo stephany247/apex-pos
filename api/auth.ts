@@ -63,6 +63,7 @@ export const refreshAccessToken = async () => {
   }
 
   localStorage.setItem("accessToken", data.data.accessToken);
+  localStorage.setItem("refreshToken", data.data.refreshToken);
 
   return data.data.accessToken;
 };
