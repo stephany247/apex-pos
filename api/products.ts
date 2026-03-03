@@ -54,3 +54,26 @@ export const getProducts = async (params: {
 
   return data;
 };
+
+export const updateProduct = async (id: string, data: any) => {
+  const response = await authFetch(
+    `${BASE_URL}/products/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  const result = await response.json();
+
+  console.log("UPDATE PRODUCT RESPONSE:", result);
+
+  if (!response.ok) {
+    throw new Error("Failed to update product");
+  }
+
+  return result;
+};

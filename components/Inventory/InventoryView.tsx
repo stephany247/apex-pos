@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { Product, ProductCategory } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createProduct, getProducts } from "@/api/products";
+import { createProduct, getProducts, updateProduct } from "@/api/products";
 import { log } from "console";
 
 // Helper for category colors and icons
@@ -69,8 +69,10 @@ const InventoryView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState<"all" | "low" | "out">("all");
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState<number>(0);
+  // const [editValue, setEditValue] = useState<number>(0);
   const [selectedDate, setSelectedDate] = useState("");
+  const [editQuantity, setEditQuantity] = useState<number>(0);
+  const [editPrice, setEditPrice] = useState<number>(0);
 
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -81,6 +83,17 @@ const InventoryView: React.FC = () => {
     },
     onError: (error: any) => {
       console.log(error.message);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) =>
+      updateProduct(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+    onError: (error) => {
+      console.log("UPDATE ERROR:", error);
     },
   });
 
@@ -121,7 +134,8 @@ const InventoryView: React.FC = () => {
 
   const startEdit = (product: Product) => {
     setEditingId(product._id);
-    setEditValue(product.quantity);
+    setEditQuantity(product.quantity);
+    setEditPrice(product.price);
   };
 
   const saveEdit = (_id: string) => {
@@ -129,7 +143,14 @@ const InventoryView: React.FC = () => {
     const timestamp = selectedDate
       ? new Date(selectedDate).toISOString()
       : undefined;
-    updateProductStock(_id, editValue, timestamp);
+    // updateProductStock(_id, editValue, timestamp);
+    updateMutation.mutate({
+      id: _id,
+      data: {
+        quantity: editQuantity,
+        price: editPrice,
+      },
+    });
     setEditingId(null);
   };
 
@@ -329,7 +350,19 @@ const InventoryView: React.FC = () => {
                               </span>
                             </td>
                             <td className="p-3 font-medium text-zinc-800 text-sm">
-                              ₦{formatCurrency(product.price)}
+                              {editingId === product._id ? (
+                                <input
+                                  type="number"
+                                  aria-label="Edit price"
+                                  value={editPrice}
+                                  onChange={(e) =>
+                                    setEditPrice(Number(e.target.value))
+                                  }
+                                  className="w-24 text-sm px-2 py-1 border rounded-lg"
+                                />
+                              ) : (
+                                <>₦{formatCurrency(product.price)}</>
+                              )}
                             </td>
                             <td className="p-3 text-center">
                               {editingId === product._id ? (
@@ -337,7 +370,9 @@ const InventoryView: React.FC = () => {
                                   <button
                                     type="button"
                                     onClick={() =>
-                                      setEditValue(Math.max(0, editValue - 1))
+                                      setEditQuantity(
+                                        Math.max(0, editQuantity - 1),
+                                      )
                                     }
                                     aria-label="Decrease quantity"
                                     className="w-8 h-8 flex items-center justify-center bg-zinc-100 rounded-full hover:bg-zinc-200 font-bold"
@@ -347,9 +382,9 @@ const InventoryView: React.FC = () => {
                                   <input
                                     aria-label="Edit quantity"
                                     type="number"
-                                    value={editValue}
+                                    value={editQuantity}
                                     onChange={(e) =>
-                                      setEditValue(
+                                      setEditQuantity(
                                         parseInt(e.target.value) ||
                                           product.quantity ||
                                           0,
@@ -359,7 +394,9 @@ const InventoryView: React.FC = () => {
                                   />
                                   <button
                                     type="button"
-                                    onClick={() => setEditValue(editValue + 1)}
+                                    onClick={() =>
+                                      setEditQuantity(editQuantity + 1)
+                                    }
                                     aria-label="Increase quantity"
                                     className="w-8 h-8 flex items-center justify-center bg-zinc-100 rounded-full hover:bg-zinc-200 font-bold"
                                   >
@@ -390,10 +427,17 @@ const InventoryView: React.FC = () => {
                                   <button
                                     type="button"
                                     onClick={() => saveEdit(product._id)}
-                                    aria-label="Save changes"
-                                    className="p-2 bg-black text-white rounded-full hover:scale-105 transition-transform"
+                                    disabled={updateMutation.isPending}
+                                    className="p-2 bg-black text-white rounded-full"
                                   >
-                                    <Save size={16} />
+                                    {updateMutation.isPending ? (
+                                      <Loader2
+                                        size={16}
+                                        className="animate-spin"
+                                      />
+                                    ) : (
+                                      <Save size={16} />
+                                    )}
                                   </button>
                                   <button
                                     type="button"
