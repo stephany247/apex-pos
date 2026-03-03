@@ -96,12 +96,15 @@ const SalesHistoryView: React.FC = () => {
           <div className="relative flex-shrink-0">
             <input
               type="date"
+              aria-label="Filter transactions by date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               className="bg-zinc-50 border-none rounded-full px-4 py-2.5 outline-none text-sm font-medium text-zinc-600 focus:ring-2 focus:ring-black cursor-pointer"
             />
             {selectedDate && (
               <button
+                type="button"
+                aria-label="Clear date filter"
                 onClick={() => setSelectedDate("")}
                 className="absolute right-9 top-1/2 -translate-y-1/2 bg-zinc-200 rounded-full p-1 text-zinc-600 hover:text-black hover:bg-zinc-300 transition-colors"
               >
@@ -283,6 +286,8 @@ const SalesHistoryView: React.FC = () => {
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
             <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden p-8 relative">
               <button
+                type="button"
+                aria-label="Close modal"
                 onClick={handleCloseModal}
                 className="absolute top-6 right-6 p-2 bg-zinc-50 rounded-full hover:bg-zinc-100 transition-colors"
               >
