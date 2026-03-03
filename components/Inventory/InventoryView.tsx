@@ -89,11 +89,39 @@ const InventoryView: React.FC = () => {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: any }) =>
       updateProduct(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: ["products"] });
+
+      const previousQueries = queryClient.getQueriesData({
+        queryKey: ["products"],
+      });
+
+      previousQueries.forEach(([queryKey, old]: any) => {
+        if (!old) return;
+
+        queryClient.setQueryData(queryKey, {
+          ...old,
+          data: {
+            ...old.data,
+            products: old.data.products.map((product: any) =>
+              product._id === id ? { ...product, ...data } : product,
+            ),
+          },
+        });
+      });
+
+      return { previousQueries };
     },
-    onError: (error) => {
-      console.log("UPDATE ERROR:", error);
+
+    onError: (_err, _vars, context) => {
+      context?.previousQueries?.forEach(([queryKey, data]: any) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
 
