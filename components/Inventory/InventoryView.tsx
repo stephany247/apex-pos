@@ -80,6 +80,7 @@ const InventoryView: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [editQuantity, setEditQuantity] = useState<number>(0);
   const [editPrice, setEditPrice] = useState<number>(0);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -494,9 +495,9 @@ const InventoryView: React.FC = () => {
                                 </span>
                               )}
                             </td>
-                            <td className="p-3 text-right">
+                            <td className="p-3 text-right relative">
                               {editingId === product._id ? (
-                                // 🔥 Edit Mode (Save / Cancel)
+                                // 🔥 Edit Mode
                                 <div className="flex items-center justify-end gap-2">
                                   <button
                                     type="button"
@@ -524,38 +525,50 @@ const InventoryView: React.FC = () => {
                                   </button>
                                 </div>
                               ) : (
-                                // 🔥 Dropdown Mode
-                                <div className="relative group inline-block">
+                                <>
+                                  {/* Trigger Button */}
                                   <button
                                     type="button"
                                     aria-label="Open product menu"
+                                    onClick={() =>
+                                      setOpenMenuId(
+                                        openMenuId === product._id
+                                          ? null
+                                          : product._id,
+                                      )
+                                    }
                                     className="p-2 rounded-full hover:bg-zinc-100 transition"
                                   >
                                     <MoreVertical size={16} />
                                   </button>
 
-                                  <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg rounded-xl border border-zinc-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-20">
-                                    <button
-                                      type="button"
-                                      aria-label={`Edit ${product.name}`}
-                                      onClick={() => startEdit(product)}
-                                      className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50 rounded-t-xl"
-                                    >
-                                      Edit
-                                    </button>
+                                  {/* Dropdown */}
+                                  {openMenuId === product._id && (
+                                    <div className="absolute right-3 mt-2 w-36 bg-white shadow-lg rounded-xl border border-zinc-100 z-20">
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          startEdit(product);
+                                          setOpenMenuId(null);
+                                        }}
+                                        className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50 rounded-t-xl"
+                                      >
+                                        Edit
+                                      </button>
 
-                                    <button
-                                      type="button"
-                                      aria-label={`Delete ${product.name}`}
-                                      onClick={() =>
-                                        deleteMutation.mutate(product._id)
-                                      }
-                                      className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 rounded-b-xl"
-                                    >
-                                      Delete
-                                    </button>
-                                  </div>
-                                </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          deleteMutation.mutate(product._id);
+                                          setOpenMenuId(null);
+                                        }}
+                                        className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 rounded-b-xl"
+                                      >
+                                        Delete
+                                      </button>
+                                    </div>
+                                  )}
+                                </>
                               )}
                             </td>
                           </tr>
