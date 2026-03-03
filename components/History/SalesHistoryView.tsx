@@ -167,7 +167,7 @@ const SalesHistoryView: React.FC = () => {
               <tbody className="divide-y divide-zinc-50">
                 {filteredTransactions.map((transaction) => (
                   <tr
-                    key={transaction.id}
+                    key={transaction._id}
                     className="hover:bg-zinc-50/50 group transition-colors"
                   >
                     <td className="p-2 font-medium text-zinc-600 text-sm align-top">
@@ -240,6 +240,7 @@ const SalesHistoryView: React.FC = () => {
                     <td className="p-2 text-right align-top">
                       <div className="flex items-center justify-end gap-2">
                         <button
+                          type="button"
                           onClick={() => handleOpenModal("edit", transaction)}
                           className="p-2 text-zinc-500 bg-zinc-100 hover:bg-black hover:text-white rounded-full transition-all"
                           title="Edit Transaction"
@@ -247,6 +248,7 @@ const SalesHistoryView: React.FC = () => {
                           <Pencil size={14} />
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleOpenModal("delete", transaction)}
                           className="p-2 text-red-500 bg-red-50 hover:bg-red-100 hover:text-red-700 rounded-full transition-all"
                           title="Delete Transaction"

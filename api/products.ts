@@ -77,3 +77,18 @@ export const updateProduct = async (id: string, data: any) => {
 
   return result;
 };
+
+export const deleteProduct = async (id: string) => {
+  const res = await authFetch(`${BASE_URL}/products/${id}`, {
+    method: "DELETE",
+  });
+
+  const data = await res.json();
+  console.log("DELETE PRODUCT RESPONSE:", data);
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to delete product");
+  }
+
+  return data;
+};

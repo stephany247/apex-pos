@@ -16,10 +16,17 @@ import {
   Sparkles,
   Plus,
   Loader2,
+  Trash2,
+  MoreVertical,
 } from "lucide-react";
 import { Product, ProductCategory } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createProduct, getProducts, updateProduct } from "@/api/products";
+import {
+  createProduct,
+  deleteProduct,
+  getProducts,
+  updateProduct,
+} from "@/api/products";
 import { log } from "console";
 
 // Helper for category colors and icons
@@ -139,6 +146,44 @@ const InventoryView: React.FC = () => {
               ? "soldOut"
               : undefined,
       }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteProduct(id),
+
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["products"] });
+
+      const previousQueries = queryClient.getQueriesData({
+        queryKey: ["products"],
+      });
+
+      previousQueries.forEach(([queryKey, old]: any) => {
+        if (!old) return;
+
+        queryClient.setQueryData(queryKey, {
+          ...old,
+          data: {
+            ...old.data,
+            products: old.data.products.filter(
+              (product: any) => product._id !== id,
+            ),
+          },
+        });
+      });
+
+      return { previousQueries };
+    },
+
+    onError: (_err, _id, context) => {
+      context?.previousQueries?.forEach(([queryKey, data]: any) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
   });
 
   // Add Product Modal State
@@ -335,7 +380,7 @@ const InventoryView: React.FC = () => {
                         <th className="p-3 font-bold text-zinc-900 text-sm">
                           Stock
                         </th>
-                        <th className="p-3 font-bold text-zinc-900 text-sm">
+                        <th className="p-3 font-bold text-zinc-900 text-sm text-right">
                           Action
                         </th>
                       </tr>
@@ -451,40 +496,66 @@ const InventoryView: React.FC = () => {
                             </td>
                             <td className="p-3 text-right">
                               {editingId === product._id ? (
+                                // 🔥 Edit Mode (Save / Cancel)
                                 <div className="flex items-center justify-end gap-2">
                                   <button
                                     type="button"
                                     onClick={() => saveEdit(product._id)}
                                     disabled={updateMutation.isPending}
-                                    className="p-2 bg-black text-white rounded-full"
+                                    className="p-2 bg-black text-white rounded-full hover:scale-105 transition"
                                   >
                                     {updateMutation.isPending ? (
                                       <Loader2
-                                        size={16}
+                                        size={14}
                                         className="animate-spin"
                                       />
                                     ) : (
-                                      <Save size={16} />
+                                      <Save size={14} />
                                     )}
                                   </button>
+
                                   <button
                                     type="button"
+                                    aria-label="Cancel edit"
                                     onClick={() => setEditingId(null)}
-                                    aria-label="Cancel editing"
-                                    className="p-2 bg-zinc-100 text-zinc-500 rounded-full hover:bg-zinc-200"
+                                    className="p-2 bg-zinc-100 text-zinc-600 rounded-full hover:bg-zinc-200 transition"
                                   >
-                                    <X size={16} />
+                                    <X size={14} />
                                   </button>
                                 </div>
                               ) : (
-                                <button
-                                  type="button"
-                                  aria-label={`Edit stock for ${product.name}`}
-                                  onClick={() => startEdit(product)}
-                                  className="p-2 text-zinc-300 hover:text-black hover:bg-zinc-100 rounded-full transition-all"
-                                >
-                                  <Pencil size={18} />
-                                </button>
+                                // 🔥 Dropdown Mode
+                                <div className="relative group inline-block">
+                                  <button
+                                    type="button"
+                                    aria-label="Open product menu"
+                                    className="p-2 rounded-full hover:bg-zinc-100 transition"
+                                  >
+                                    <MoreVertical size={16} />
+                                  </button>
+
+                                  <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg rounded-xl border border-zinc-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-20">
+                                    <button
+                                      type="button"
+                                      aria-label={`Edit ${product.name}`}
+                                      onClick={() => startEdit(product)}
+                                      className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50 rounded-t-xl"
+                                    >
+                                      Edit
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      aria-label={`Delete ${product.name}`}
+                                      onClick={() =>
+                                        deleteMutation.mutate(product._id)
+                                      }
+                                      className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 rounded-b-xl"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
                               )}
                             </td>
                           </tr>
