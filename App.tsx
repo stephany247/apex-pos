@@ -9,33 +9,13 @@ import SalesHistoryView from "./components/History/SalesHistoryView";
 import LoginPage from "./components/Auth/LoginPage";
 import SignupPage from "./components/Auth/SignupPage";
 import LandingPage from "./components/LandingPage";
-import { ViewState } from "./types";
 import { Menu, Search } from "lucide-react";
 
-/* =========================
-   DASHBOARD LAYOUT
-========================= */
+// DASHBOARD LAYOUT
 
 const DashboardLayout: React.FC = () => {
   const { currentUser } = useStore();
-  const [currentView, setCurrentView] = useState<ViewState>("pos");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
-  const renderView = () => {
-    switch (currentView) {
-      case "pos":
-        return <POSView />;
-      case "inventory":
-        return <InventoryView />;
-      case "reports":
-        return <ReportsView />;
-      case "history":
-        return <SalesHistoryView />;
-      default:
-        return <POSView />;
-    }
-  };
-
   const location = useLocation();
 
   const getViewTitle = () => {
@@ -111,13 +91,19 @@ const DashboardLayout: React.FC = () => {
   );
 };
 
-/* =========================
-   ROUTING
-========================= */
+// Routing
 
 const AppContent: React.FC = () => {
-  const { currentUser } = useStore();
-
+  const { currentUser, isAuthLoading } = useStore();
+  if (isAuthLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-[#FDF6E9]">
+        <h1 className="text-5xl font-bold tracking-tight text-[#111111] animate-pulse">
+          apex<span className="text-zinc-400 rounded-full">.</span>
+        </h1>
+      </div>
+    );
+  }
   return (
     <Routes>
       {/* Root */}
@@ -154,10 +140,6 @@ const AppContent: React.FC = () => {
     </Routes>
   );
 };
-
-/* =========================
-   ROOT APP
-========================= */
 
 const App: React.FC = () => {
   return (

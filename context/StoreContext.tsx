@@ -48,17 +48,26 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
     useState<Transaction[]>(MOCK_TRANSACTIONS);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   // Load user from local storage on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("apex_user");
-    if (storedUser) {
+    const initAuth = async () => {
       try {
-        setCurrentUser(JSON.parse(storedUser));
-      } catch (e) {
+        const storedUser = localStorage.getItem("apex_user");
+
+        if (storedUser) {
+          setCurrentUser(JSON.parse(storedUser));
+        }
+      } catch {
         localStorage.removeItem("apex_user");
+        setCurrentUser(null);
+      } finally {
+        setIsAuthLoading(false);
       }
-    }
+    };
+
+    initAuth();
   }, []);
 
   const setUser = (user: User) => {
@@ -218,20 +227,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
   // Auth Functions
   const login = async (email: string, password: string): Promise<boolean> => {
     // Mock Login Logic
+    setIsAuthLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 800)); // Simulate delay
 
     // Allow any login for demo purposes if it's not empty
     if (email && password) {
-      const user: User = {
-        id: "u1",
-        name: "Alex Sales",
-        email: email,
-        role: "manager",
-      };
+      const user: User = CURRENT_USER;
       setCurrentUser(user);
       localStorage.setItem("apex_user", JSON.stringify(user));
+      setIsAuthLoading(false);
       return true;
     }
+    setIsAuthLoading(false);
     return false;
   };
 
@@ -241,6 +248,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
     password: string,
   ): Promise<boolean> => {
     // Mock Signup Logic
+    setIsAuthLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 800));
     if (name && email && password) {
       const user: User = {
@@ -251,8 +259,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
       };
       setCurrentUser(user);
       localStorage.setItem("apex_user", JSON.stringify(user));
+      setIsAuthLoading(false);
       return true;
     }
+    setIsAuthLoading(false);
     return false;
   };
 
@@ -269,6 +279,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
         transactions,
         cart,
         currentUser,
+        isAuthLoading,
         setUser,
         addToCart,
         removeFromCart,
