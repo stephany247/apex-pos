@@ -34,6 +34,8 @@ const DashboardLayout: React.FC = () => {
         <header className="px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 flex-1">
             <button
+              type="button"
+              aria-label="Toggle Menu"
               onClick={() => setIsMobileOpen(true)}
               className="lg:hidden p-2 -ml-2 text-zinc-600 hover:bg-zinc-100 rounded-full"
             >

@@ -11,6 +11,7 @@ import {
   Pencil,
   Trash2,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 import { Transaction } from "../../types";
 import { useQuery } from "@tanstack/react-query";
@@ -129,7 +130,8 @@ const SalesHistoryView: React.FC = () => {
       <div className="flex-1 min-h-0 overflow-hidden px-6 pb-6">
         <div className="rounded-3xl border border-zinc-100 overflow-auto max-h-screen h-full">
           {isLoading && (
-            <div className="flex items-center justify-center h-48">
+            <div className="flex flex-col gap-3 items-center justify-center h-48 text-zinc-500 font-medium">
+              <Loader2 className="animate-spin" size={36} />
               Loading transactions...
             </div>
           )}
