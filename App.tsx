@@ -8,7 +8,7 @@ import ReportsView from "./components/Reports/ReportsView";
 import SalesHistoryView from "./components/History/SalesHistoryView";
 import LoginPage from "./components/Auth/LoginPage";
 import SignupPage from "./components/Auth/SignupPage";
-import LandingPage from "./components/LandingPage";
+import LandingPage from "./components/Landing/LandingPage";
 import { Menu, Search } from "lucide-react";
 
 // DASHBOARD LAYOUT

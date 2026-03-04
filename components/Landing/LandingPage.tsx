@@ -1,5 +1,6 @@
 import React from "react";
 import { ShoppingCart, Box, BarChart3, LogIn, Package } from "lucide-react";
+import { AudienceCard, OfferCard, StepCard } from "./Cards";
 
 const LandingPage = () => {
   return (
@@ -70,21 +71,21 @@ const LandingPage = () => {
 
         <div className="space-y-8">
           <OfferCard
-            color="bg-yellow-400"
+            color="bg-[#FFCC3D]"
             title="Real-Time Sales & Expense Tracking"
-            text="Record transactions instantly and see exactly where your money goes."
+            text="Record transactions in seconds and instantly see where your money is going. Whether it’s a daily sale, supplier payment, transfer, or unexpected expense, every transaction is captured and organized automatically."
           />
 
           <OfferCard
-            color="bg-pink-500"
+            color="bg-[#FF4DAC]"
             title="Smart Automation"
-            text="Automatically categorize income and expenses accurately."
+            text="Stop manual calculations and eliminate costly errors. Our smart system automatically tracks every transaction, categorizes income and expenses accurately, and updates your records in real time, giving you organized financial data, clear insights, and more time to focus on growing your business."
           />
 
           <OfferCard
-            color="bg-purple-500"
+            color="bg-[#AA5FFF]"
             title="Simple Financial Reports"
-            text="Clear dashboards that show sales, expenses and cash flow."
+            text="Understand your business performance instantly with clean, easy-to-read dashboards that present your sales, expenses, and cash flow in a clear visual format. Make faster, smarter decisions using real-time data designed to give you confidence, clarity, and complete financial visibility."
           />
         </div>
       </section>
@@ -98,15 +99,15 @@ const LandingPage = () => {
         <div className="grid md:grid-cols-3 gap-8">
           <AudienceCard
             title="Small Shops"
-            img="https://images.unsplash.com/photo-1556740738-b6a63e27c4df"
+            img="/assets/small-shops.jpg"
           />
           <AudienceCard
             title="Service Providers"
-            img="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
+            img="/assets/service-providers.jpg"
           />
           <AudienceCard
             title="Retail Businesses"
-            img="https://images.unsplash.com/photo-1542744173-8e7e53415bb0"
+            img="/assets/retail-business.jpg"
           />
         </div>
       </section>
@@ -149,52 +150,5 @@ const LandingPage = () => {
     </div>
   );
 };
-
-/* Components */
-
-const OfferCard = ({
-  color,
-  title,
-  text,
-}: {
-  color: string;
-  title: string;
-  text: string;
-}) => (
-  <div className={`${color} rounded-3xl p-10`}>
-    <h4 className="text-xl font-bold mb-4">{title}</h4>
-    <p className="mb-6">{text}</p>
-    <button className="bg-white text-black px-5 py-2 rounded-full text-sm font-medium">
-      Use apex
-    </button>
-  </div>
-);
-
-const AudienceCard = ({ title, img }: { title: string; img: string }) => (
-  <div>
-    <img
-      src={img}
-      alt={title}
-      className="rounded-2xl h-64 w-full object-cover mb-4"
-    />
-    <h4 className="font-semibold text-lg">{title}</h4>
-  </div>
-);
-
-const StepCard = ({
-  number,
-  title,
-  icon,
-}: {
-  number: string;
-  title: string;
-  icon: React.ReactNode;
-}) => (
-  <div className="bg-yellow-400 rounded-2xl p-6 text-center">
-    <p className="text-sm font-medium mb-2">{number}</p>
-    <div className="flex justify-center mb-3">{icon}</div>
-    <h4 className="font-semibold">{title}</h4>
-  </div>
-);
 
 export default LandingPage;
