@@ -339,16 +339,27 @@ const LandingPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="bg-black text-white pt-24 pb-12 text-center">
+      <motion.footer
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        viewport={{ once: true }}
+        className="bg-black text-white pt-24 pb-12 text-center"
+      >
         <h3 className="text-4xl font-bold mb-6">Take Control Now</h3>
-        <button className="bg-yellow-400 text-black px-8 py-3 rounded-full font-medium hover:bg-yellow-300 transition">
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.96 }}
+          className="bg-yellow-400 text-black px-8 py-3 rounded-full font-medium hover:bg-yellow-300 transition"
+        >
           Join the waitlist
-        </button>
+        </motion.button>
 
         <p className="text-zinc-500 mt-10 text-sm">
           © 2026 Apex. All rights reserved.
         </p>
-      </section>
+      </motion.footer>
     </div>
   );
 };
