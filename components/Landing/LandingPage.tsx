@@ -1,14 +1,40 @@
-import React, { useState } from "react";
-import { ShoppingCart, Box, BarChart3, LogIn, Package, X, Menu } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  ShoppingCart,
+  Box,
+  BarChart3,
+  LogIn,
+  Package,
+  X,
+  Menu,
+} from "lucide-react";
 import { AudienceCard, OfferCard, StepCard } from "./Cards";
 
 const LandingPage = () => {
   const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
     <div className="bg-white text-black">
       {/* Navbar */}
       <nav className="fixed top-0 left-0 w-full z-50 px-4 pt-4">
-        <div className="max-w-6xl mx-auto bg-black text-white rounded-full px-6 py-4 flex items-center justify-between">
+        <div
+          ref={menuRef}
+          className="max-w-6xl mx-auto bg-black text-white rounded-full px-6 py-4 flex items-center justify-between"
+        >
           <h1 className="text-xl font-bold tracking-tight">
             apex<span className="text-zinc-400">.</span>
           </h1>
@@ -172,7 +198,7 @@ const LandingPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="bg-black text-white py-24 text-center">
+      <section className="bg-black text-white pt-24 pb-4 text-center">
         <h3 className="text-4xl font-bold mb-6">Take Control Now</h3>
         <button className="bg-yellow-400 text-black px-8 py-3 rounded-full font-medium hover:bg-yellow-300 transition">
           Join the waitlist
