@@ -25,14 +25,14 @@ export const AudienceCard = ({
   title: string;
   img: string;
 }) => (
-  <div>
+  <motion.div whileHover={{ y: -8 }}>
     <img
       src={img}
       alt={title}
       className="rounded-2xl h-64 w-full object-cover object-center mb-4"
     />
     <h4 className="font-semibold text-lg text-center md:text-left">{title}</h4>
-  </div>
+  </motion.div>
 );
 
 export const StepCard = ({
@@ -69,10 +69,7 @@ export const StackCard = ({
   const y = useTransform(scroll, [0, 1], [index * 40, 0]);
 
   return (
-    <motion.div
-      style={{ scale, y }}
-      className="sticky top-32 mb-10"
-    >
+    <motion.div style={{ scale, y }} className="sticky top-32 mb-10">
       {children}
     </motion.div>
   );

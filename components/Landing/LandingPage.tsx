@@ -35,6 +35,29 @@ const LandingPage = () => {
     target: ref,
     offset: ["start start", "end end"],
   });
+
+  const container = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.25,
+        delayChildren: 0.15,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 60 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.7,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
     <div className="bg-white text-black">
       {/* Navbar */}
@@ -104,7 +127,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="mt-6 text-zinc-600 max-w-md mx-auto"
+            className="mt-6 text-zinc-600 max-w-md mx-auto md:mx-0"
           >
             Smart, simple digital tools designed for busy SME owners. No
             accounting expertise required.
@@ -170,7 +193,7 @@ const LandingPage = () => {
       {/* What we offer */}
       <section ref={ref} className="relative max-w-5xl mx-auto px-6 py-12">
         <motion.h3
-          initial={{ opacity: 0.4, y: 30 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
@@ -207,21 +230,41 @@ const LandingPage = () => {
 
       {/* Who is this for */}
       <section className="max-w-6xl mx-auto px-6 py-20">
-        <h3 className="text-4xl font-bold text-center mb-12">
+        <motion.h3
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-4xl font-bold text-center mb-12"
+        >
           Who is this for
-        </h3>
+        </motion.h3>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          <AudienceCard title="Small Shops" img="/assets/small-shops.jpg" />
-          <AudienceCard
-            title="Service Providers"
-            img="/assets/service-providers.jpg"
-          />
-          <AudienceCard
-            title="Retail Businesses"
-            img="/assets/retail-business.jpg"
-          />
-        </div>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid md:grid-cols-3 gap-8"
+        >
+          <motion.div variants={item}>
+            <AudienceCard title="Small Shops" img="/assets/small-shops.jpg" />
+          </motion.div>
+
+          <motion.div variants={item}>
+            <AudienceCard
+              title="Service Providers"
+              img="/assets/service-providers.jpg"
+            />
+          </motion.div>
+
+          <motion.div variants={item}>
+            <AudienceCard
+              title="Retail Businesses"
+              img="/assets/retail-business.jpg"
+            />
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* How it works */}
