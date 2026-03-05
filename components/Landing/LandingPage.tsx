@@ -47,10 +47,11 @@ const LandingPage = () => {
   };
 
   const item = {
-    hidden: { opacity: 0, y: 60 },
+    hidden: { opacity: 0, y: 60, scale: 0.96 },
     show: {
       opacity: 1,
       y: 0,
+      scale: 1,
       transition: {
         duration: 0.7,
         ease: "easeOut",
@@ -257,7 +258,7 @@ const LandingPage = () => {
           variants={container}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-120px" }}
           className="grid md:grid-cols-3 gap-8"
         >
           <motion.div variants={item}>
@@ -296,7 +297,7 @@ const LandingPage = () => {
           variants={container}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-120px" }}
           className="grid md:grid-cols-4 gap-6"
         >
           <motion.div variants={step}>
