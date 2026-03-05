@@ -215,7 +215,7 @@ const LandingPage = () => {
         >
           What we offer
         </motion.h3>
-        <div className="relative h-[1000px]">
+        <div className="relative h-auto">
           <StackCard index={0} scroll={scrollYProgress}>
             <OfferCard
               color="bg-[#FFCC3D]"
@@ -243,7 +243,7 @@ const LandingPage = () => {
       </section>
 
       {/* Who is this for */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
+      <section className="max-w-6xl mx-auto px-6 py-12">
         <motion.h3
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
