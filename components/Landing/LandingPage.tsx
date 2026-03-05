@@ -6,8 +6,8 @@ const LandingPage = () => {
   return (
     <div className="bg-white text-black">
       {/* Navbar */}
-      <nav className="max-w-6xl mx-auto px-6 pt-6">
-        <div className="bg-black text-white rounded-full px-8 py-4 flex items-center justify-between">
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 pt-6">
+        <div className="max-w-6xl mx-auto bg-black text-white rounded-full px-8 py-4 flex items-center justify-between shadow-md">
           <h1 className="text-2xl font-bold tracking-tight">
             apex<span className="text-zinc-400">.</span>
           </h1>
@@ -18,14 +18,14 @@ const LandingPage = () => {
             <a href="#how">How it works</a>
           </div>
 
-          <button className="bg-yellow-400 text-black px-5 py-2 rounded-full font-medium hover:bg-yellow-300 transition">
+          <button className="bg-[#FFBC00] text-black px-5 py-2 rounded-full font-medium hover:bg-yellow-300 transition">
             Get Started
           </button>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+      <section className="max-w-6xl mx-auto px-6 pt-40 py-20 grid md:grid-cols-2 gap-12 items-center text-center md:text-left" id="home">
         <div>
           <h2 className="text-5xl md:text-6xl font-bold leading-tight">
             Record <br /> Everything.
@@ -36,14 +36,14 @@ const LandingPage = () => {
             accounting expertise required.
           </p>
 
-          <button className="mt-6 bg-yellow-400 px-6 py-2 rounded-full border-2 border-black font-medium hover:bg-yellow-300 transition">
+          <button className="mt-6 bg-[#FFBC00] px-8 py-2 rounded-full border-2 border-black font-medium hover:bg-yellow-300 transition">
             Use apex
           </button>
         </div>
 
         <div className="relative flex justify-center">
           {/* Top floating icon */}
-          <div className="absolute -top-6 -left-6 bg-white rounded-full w-24 h-24 flex items-center justify-center z-10">
+          <div className="absolute -top-4  -left-4 bg-white rounded-full w-24 h-24 flex items-center justify-center z-10">
             <div className="border-2 p-4 border-black ring-3 rounded-full flex items-center justify-center">
               <ShoppingCart className="text-black" size={26} />
             </div>
@@ -57,7 +57,7 @@ const LandingPage = () => {
           />
 
           {/* Bottom floating icon */}
-          <div className="absolute -bottom-6 -right-6 bg-white rounded-full w-24 h-24 flex items-center justify-center">
+          <div className="absolute -bottom-4 -right-4 bg-white rounded-full w-24 h-24 flex items-center justify-center">
             <div className="bg-black p-4 border-black ring-3 rounded-full flex items-center justify-center">
               <Package className="text-white" size={26} />
             </div>

@@ -30,7 +30,7 @@ export const AudienceCard = ({
       alt={title}
       className="rounded-2xl h-64 w-full object-cover object-center mb-4"
     />
-    <h4 className="font-semibold text-lg">{title}</h4>
+    <h4 className="font-semibold text-lg text-center md:text-left">{title}</h4>
   </div>
 );
 
