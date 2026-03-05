@@ -85,7 +85,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="bg-white text-black">
+    <div className="bg-white text-black w-full overflow-x-hidden">
       {/* Navbar */}
       <motion.nav
         animate={{ y: hidden ? -120 : 0 }}
@@ -201,7 +201,7 @@ const LandingPage = () => {
           <img
             src="/assets/hero-image.png"
             alt="business"
-            className="relative rounded-[40px] object-cover w-full max-w-md h-[420px] shadow-xl"
+            className="relative rounded-[40px] object-cover w-full max-w-md h-[400px] shadow-xl"
           />
 
           {/* FLOATING ICON 2 */}
