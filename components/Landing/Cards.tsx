@@ -1,3 +1,4 @@
+import { motion, useTransform } from "framer-motion";
 import React from "react";
 export const OfferCard = ({
   color,
@@ -54,3 +55,25 @@ export const StepCard = ({
     <p className="text-sm">{description}</p>
   </div>
 );
+
+export const StackCard = ({
+  children,
+  index,
+  scroll,
+}: {
+  children: React.ReactNode;
+  index: number;
+  scroll: any;
+}) => {
+  const scale = useTransform(scroll, [0, 1], [1 - index * 0.05, 1]);
+  const y = useTransform(scroll, [0, 1], [index * 40, 0]);
+
+  return (
+    <motion.div
+      style={{ scale, y }}
+      className="sticky top-32 mb-10"
+    >
+      {children}
+    </motion.div>
+  );
+};

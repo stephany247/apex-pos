@@ -8,8 +8,8 @@ import {
   X,
   Menu,
 } from "lucide-react";
-import { AudienceCard, OfferCard, StepCard } from "./Cards";
-import { motion } from "framer-motion";
+import { AudienceCard, OfferCard, StackCard, StepCard } from "./Cards";
+import { motion, useScroll } from "framer-motion";
 
 const LandingPage = () => {
   const [open, setOpen] = useState(false);
@@ -28,6 +28,13 @@ const LandingPage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const ref = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end end"],
+  });
   return (
     <div className="bg-white text-black">
       {/* Navbar */}
@@ -80,7 +87,7 @@ const LandingPage = () => {
 
       {/* Hero */}
       <section
-        className="max-w-6xl mx-auto px-6 pt-40 py-20 grid md:grid-cols-2 gap-12 items-center text-center md:text-left"
+        className="max-w-6xl mx-auto px-6 pt-40 py-12 grid md:grid-cols-2 gap-12 items-center text-center md:text-left"
         id="home"
       >
         <div>
@@ -161,27 +168,40 @@ const LandingPage = () => {
       </section>
 
       {/* What we offer */}
-      <section className="max-w-5xl mx-auto px-6 py-20">
-        <h3 className="text-4xl font-bold text-center mb-12">What we offer</h3>
+      <section ref={ref} className="relative max-w-5xl mx-auto px-6 py-12">
+        <motion.h3
+          initial={{ opacity: 0.4, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-4xl font-bold text-center mb-12"
+        >
+          What we offer
+        </motion.h3>
+        <div className="relative h-[1000px]">
+          <StackCard index={0} scroll={scrollYProgress}>
+            <OfferCard
+              color="bg-[#FFCC3D]"
+              title="Real-Time Sales & Expense Tracking"
+              text="Record transactions in seconds and instantly see where your money is going. Whether it’s a daily sale, supplier payment, transfer, or unexpected expense, every transaction is captured and organized automatically."
+            />
+          </StackCard>
 
-        <div className="space-y-8">
-          <OfferCard
-            color="bg-[#FFCC3D]"
-            title="Real-Time Sales & Expense Tracking"
-            text="Record transactions in seconds and instantly see where your money is going. Whether it’s a daily sale, supplier payment, transfer, or unexpected expense, every transaction is captured and organized automatically."
-          />
+          <StackCard index={1} scroll={scrollYProgress}>
+            <OfferCard
+              color="bg-[#FF4DAC]"
+              title="Smart Automation"
+              text="Stop manual calculations and eliminate costly errors. Our smart system automatically tracks every transaction, categorizes income and expenses accurately, and updates your records in real time, giving you organized financial data, clear insights, and more time to focus on growing your business."
+            />
+          </StackCard>
 
-          <OfferCard
-            color="bg-[#FF4DAC]"
-            title="Smart Automation"
-            text="Stop manual calculations and eliminate costly errors. Our smart system automatically tracks every transaction, categorizes income and expenses accurately, and updates your records in real time, giving you organized financial data, clear insights, and more time to focus on growing your business."
-          />
-
-          <OfferCard
-            color="bg-[#AA5FFF]"
-            title="Simple Financial Reports"
-            text="Understand your business performance instantly with clean, easy-to-read dashboards that present your sales, expenses, and cash flow in a clear visual format. Make faster, smarter decisions using real-time data designed to give you confidence, clarity, and complete financial visibility."
-          />
+          <StackCard index={2} scroll={scrollYProgress}>
+            <OfferCard
+              color="bg-[#AA5FFF]"
+              title="Simple Financial Reports"
+              text="Understand your business performance instantly with clean, easy-to-read dashboards that present your sales, expenses, and cash flow in a clear visual format. Make faster, smarter decisions using real-time data designed to give you confidence, clarity, and complete financial visibility."
+            />
+          </StackCard>
         </div>
       </section>
 
