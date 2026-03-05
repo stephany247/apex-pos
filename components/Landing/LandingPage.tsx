@@ -97,10 +97,7 @@ const LandingPage = () => {
         </h3>
 
         <div className="grid md:grid-cols-3 gap-8">
-          <AudienceCard
-            title="Small Shops"
-            img="/assets/small-shops.jpg"
-          />
+          <AudienceCard title="Small Shops" img="/assets/small-shops.jpg" />
           <AudienceCard
             title="Service Providers"
             img="/assets/service-providers.jpg"
@@ -120,18 +117,26 @@ const LandingPage = () => {
           <StepCard
             number="01"
             title="Login/Signup"
-            icon={<LogIn size={28} />}
+            icon="/assets/auth.png"
+            description="Lorem ipsum dolor sit amet consectetur. Hendrerit habitant massa nulla"
           />
-          <StepCard number="02" title="Add products" icon={<Box size={28} />} />
+          <StepCard
+            number="02"
+            title="Add products"
+            icon="/assets/add-products.png"
+            description="Lorem ipsum dolor sit amet consectetur. Hendrerit habitant massa nulla"
+          />
           <StepCard
             number="03"
             title="Record Sales"
-            icon={<ShoppingCart size={28} />}
+            icon="/assets/record-sales.png"
+            description="Lorem ipsum dolor sit amet consectetur. Hendrerit habitant massa nulla"
           />
           <StepCard
             number="04"
             title="Analyze Data"
-            icon={<BarChart3 size={28} />}
+            icon="/assets/analytics.png"
+            description="Lorem ipsum dolor sit amet consectetur. Hendrerit habitant massa nulla"
           />
         </div>
       </section>

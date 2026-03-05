@@ -38,14 +38,19 @@ export const StepCard = ({
   number,
   title,
   icon,
+  description,
 }: {
   number: string;
   title: string;
-  icon: React.ReactNode;
+  icon: string;
+  description: string;
 }) => (
-  <div className="bg-yellow-400 rounded-2xl p-6 text-center">
+  <div className="bg-[#FFCC3D] rounded-2xl p-6 text-center">
     <p className="text-sm font-medium mb-2">{number}</p>
-    <h4 className="font-semibold">{title}</h4>
-    <div className="flex justify-center mb-3">{icon}</div>
+    <h4 className="font-extrabold text-xl">{title}</h4>
+    <div className="flex justify-center my-4">
+      <img src={icon} alt={title} className="w-12 h-12 object-contain" />
+    </div>
+    <p className="text-sm">{description}</p>
   </div>
 );
