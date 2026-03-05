@@ -9,6 +9,7 @@ import {
   Menu,
 } from "lucide-react";
 import { AudienceCard, OfferCard, StepCard } from "./Cards";
+import { motion } from "framer-motion";
 
 const LandingPage = () => {
   const [open, setOpen] = useState(false);
@@ -33,7 +34,7 @@ const LandingPage = () => {
       <nav className="fixed top-0 left-0 w-full z-50 px-4 pt-4">
         <div
           ref={menuRef}
-          className="max-w-6xl mx-auto bg-black text-white rounded-full px-6 py-4 flex items-center justify-between"
+          className="max-w-5xl mx-auto bg-black text-white rounded-full px-6 py-4 flex items-center justify-between"
         >
           <h1 className="text-xl font-bold tracking-tight">
             apex<span className="text-zinc-400">.</span>
@@ -83,42 +84,80 @@ const LandingPage = () => {
         id="home"
       >
         <div>
-          <h2 className="text-5xl md:text-6xl font-bold leading-tight">
+          <motion.h2
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-5xl md:text-6xl font-bold leading-tight"
+          >
             Record <br /> Everything.
-          </h2>
+          </motion.h2>
 
-          <p className="mt-6 text-zinc-600 max-w-md">
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="mt-6 text-zinc-600 max-w-md mx-auto"
+          >
             Smart, simple digital tools designed for busy SME owners. No
             accounting expertise required.
-          </p>
+          </motion.p>
 
-          <button className="mt-6 bg-[#FFBC00] px-8 py-2 rounded-full border-2 border-black font-medium hover:bg-yellow-300 transition">
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="mt-6 bg-[#FFBC00] px-8 py-2 rounded-full border-2 border-black font-medium hover:bg-yellow-300 transition"
+          >
             Use apex
-          </button>
+          </motion.button>
         </div>
 
-        <div className="relative flex justify-center">
-          {/* Top floating icon */}
-          <div className="absolute -top-4  -left-4 bg-white rounded-full w-24 h-24 flex items-center justify-center z-10">
-            <div className="border-2 p-4 border-black ring-3 rounded-full flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="relative flex justify-center"
+        >
+          {/* Glow */}
+          <div className="absolute w-[420px] h-[420px] bg-yellow-300/40 blur-3xl rounded-full -z-10" />
+
+          {/* FLOATING ICON 1 */}
+          <motion.div
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-4 -left-4 bg-white rounded-full w-24 h-24 flex items-center justify-center z-10 shadow-md"
+          >
+            <div className="border-2 p-4 border-black rounded-full flex items-center justify-center">
               <ShoppingCart className="text-black" size={26} />
             </div>
-          </div>
+          </motion.div>
 
           {/* Main Image */}
           <img
             src="/assets/hero-image.png"
             alt="business"
-            className="rounded-[40px] object-cover w-full max-w-md h-[420px]"
+            className="relative rounded-[40px] object-cover w-full max-w-md h-[420px] shadow-xl"
           />
 
-          {/* Bottom floating icon */}
-          <div className="absolute -bottom-4 -right-4 bg-white rounded-full w-24 h-24 flex items-center justify-center">
-            <div className="bg-black p-4 border-black ring-3 rounded-full flex items-center justify-center">
+          {/* FLOATING ICON 2 */}
+          <motion.div
+            animate={{ y: [0, 12, 0] }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+            className="absolute -bottom-4 -right-4 bg-white rounded-full w-24 h-24 flex items-center justify-center shadow-md"
+          >
+            <div className="bg-black p-4 rounded-full flex items-center justify-center">
               <Package className="text-white" size={26} />
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* What we offer */}
@@ -198,7 +237,7 @@ const LandingPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="bg-black text-white pt-24 pb-4 text-center">
+      <section className="bg-black text-white pt-24 pb-12 text-center">
         <h3 className="text-4xl font-bold mb-6">Take Control Now</h3>
         <button className="bg-yellow-400 text-black px-8 py-3 rounded-full font-medium hover:bg-yellow-300 transition">
           Join the waitlist
