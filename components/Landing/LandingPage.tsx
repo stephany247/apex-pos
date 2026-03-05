@@ -58,6 +58,19 @@ const LandingPage = () => {
     },
   };
 
+  const step = {
+    hidden: { opacity: 0, y: 50, scale: 0.95 },
+    show: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
     <div className="bg-white text-black">
       {/* Navbar */}
@@ -269,34 +282,59 @@ const LandingPage = () => {
 
       {/* How it works */}
       <section className="max-w-6xl mx-auto px-6 py-20" id="how">
-        <h3 className="text-4xl font-bold text-center mb-12">How it works</h3>
+        <motion.h3
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-4xl font-bold text-center mb-12"
+        >
+          How it works
+        </motion.h3>
 
-        <div className="grid md:grid-cols-4 gap-6">
-          <StepCard
-            number="01"
-            title="Login/Signup"
-            icon="/assets/auth.png"
-            description="Lorem ipsum dolor sit amet consectetur. Hendrerit habitant massa nulla"
-          />
-          <StepCard
-            number="02"
-            title="Add products"
-            icon="/assets/add-products.png"
-            description="Lorem ipsum dolor sit amet consectetur. Hendrerit habitant massa nulla"
-          />
-          <StepCard
-            number="03"
-            title="Record Sales"
-            icon="/assets/record-sales.png"
-            description="Lorem ipsum dolor sit amet consectetur. Hendrerit habitant massa nulla"
-          />
-          <StepCard
-            number="04"
-            title="Analyze Data"
-            icon="/assets/analytics.png"
-            description="Lorem ipsum dolor sit amet consectetur. Hendrerit habitant massa nulla"
-          />
-        </div>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="grid md:grid-cols-4 gap-6"
+        >
+          <motion.div variants={step}>
+            <StepCard
+              number="01"
+              title="Login/Signup"
+              icon="/assets/auth.png"
+              description="Lorem ipsum dolor sit amet consectetur."
+            />
+          </motion.div>
+
+          <motion.div variants={step}>
+            <StepCard
+              number="02"
+              title="Add products"
+              icon="/assets/add-products.png"
+              description="Lorem ipsum dolor sit amet consectetur."
+            />
+          </motion.div>
+
+          <motion.div variants={step}>
+            <StepCard
+              number="03"
+              title="Record Sales"
+              icon="/assets/record-sales.png"
+              description="Lorem ipsum dolor sit amet consectetur."
+            />
+          </motion.div>
+
+          <motion.div variants={step}>
+            <StepCard
+              number="04"
+              title="Analyze Data"
+              icon="/assets/analytics.png"
+              description="Lorem ipsum dolor sit amet consectetur."
+            />
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* CTA */}

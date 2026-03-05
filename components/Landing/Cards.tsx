@@ -46,14 +46,17 @@ export const StepCard = ({
   icon: string;
   description: string;
 }) => (
-  <div className="bg-[#FFCC3D] rounded-2xl p-6 text-center">
+  <motion.div
+    whileHover={{ y: -6 }}
+    className="bg-[#FFCC3D] rounded-2xl p-6 text-center"
+  >
     <p className="text-sm font-medium mb-2">{number}</p>
     <h4 className="font-extrabold text-xl">{title}</h4>
     <div className="flex justify-center my-4">
       <img src={icon} alt={title} className="w-12 h-12 object-contain" />
     </div>
     <p className="text-sm">{description}</p>
-  </div>
+  </motion.div>
 );
 
 export const StackCard = ({
