@@ -10,7 +10,7 @@ export const OfferCard = ({
   text: string;
 }) => (
   <div className={`${color} rounded-3xl p-10`}>
-    <h4 className="text-xl font-bold mb-4">{title}</h4>
+    <h3 className="text-xl font-bold mb-4">{title}</h3>
     <p className="mb-6">{text}</p>
     <button className="bg-white text-black px-7 py-2 border-2 border-black rounded-full text-sm font-medium">
       Use apex
@@ -31,7 +31,7 @@ export const AudienceCard = ({
       alt={title}
       className="rounded-2xl h-64 w-full object-cover object-center mb-4"
     />
-    <h4 className="font-semibold text-lg text-center md:text-left">{title}</h4>
+    <h3 className="font-semibold text-lg text-center md:text-left">{title}</h3>
   </motion.div>
 );
 
@@ -51,7 +51,7 @@ export const StepCard = ({
     className="bg-[#FFCC3D] rounded-2xl p-6 text-center"
   >
     <p className="text-sm font-medium mb-2">{number}</p>
-    <h4 className="font-extrabold text-xl">{title}</h4>
+    <h3 className="font-extrabold text-xl">{title}</h3>
     <div className="flex justify-center my-4">
       <img src={icon} alt={title} className="w-12 h-12 object-contain" />
     </div>
