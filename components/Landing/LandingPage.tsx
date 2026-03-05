@@ -9,7 +9,7 @@ import {
   Menu,
 } from "lucide-react";
 import { AudienceCard, OfferCard, StackCard, StepCard } from "./Cards";
-import { motion, useScroll } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 
 const LandingPage = () => {
   const [open, setOpen] = useState(false);
@@ -30,6 +30,18 @@ const LandingPage = () => {
   }, []);
 
   const ref = useRef(null);
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+
+    if (latest > previous && latest > 100) {
+      setHidden(true); // scrolling down
+    } else {
+      setHidden(false); // scrolling up
+    }
+  });
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -75,26 +87,32 @@ const LandingPage = () => {
   return (
     <div className="bg-white text-black">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-4 pt-4">
+      <motion.nav
+        animate={{ y: hidden ? -120 : 0 }}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className="fixed top-0 left-0 w-full z-50 px-4 pt-4"
+      >
         <div
           ref={menuRef}
-          className="max-w-5xl mx-auto bg-black text-white rounded-full px-6 py-4 flex items-center justify-between"
+          className="max-w-5xl mx-auto bg-black text-white rounded-full px-6 py-4 flex items-center"
         >
-          <h1 className="text-xl font-bold tracking-tight">
+          <h1 className="text-xl font-bold tracking-tight flex-1">
             apex<span className="text-zinc-400">.</span>
           </h1>
 
           {/* Desktop links */}
-          <div className="hidden md:flex gap-8 font-medium">
+          <div className="hidden md:flex gap-8 font-medium justify-center flex-1">
             <a href="#home">Home</a>
             <a href="#about">About</a>
             <a href="#how">How it works</a>
           </div>
 
           {/* Desktop CTA */}
-          <button className="hidden md:block bg-yellow-400 text-black px-5 py-2 rounded-full font-medium">
-            Get Started
-          </button>
+          <div className="flex-1 flex justify-end">
+            <button className="hidden md:block bg-yellow-400 text-black px-5 py-2 rounded-full font-medium">
+              Get Started
+            </button>
+          </div>
 
           {/* Mobile menu button */}
           <button className="md:hidden" onClick={() => setOpen(!open)}>
@@ -120,7 +138,7 @@ const LandingPage = () => {
             </button>
           </div>
         )}
-      </nav>
+      </motion.nav>
 
       {/* Hero */}
       <section
