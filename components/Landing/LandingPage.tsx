@@ -1,31 +1,61 @@
-import React from "react";
-import { ShoppingCart, Box, BarChart3, LogIn, Package } from "lucide-react";
+import React, { useState } from "react";
+import { ShoppingCart, Box, BarChart3, LogIn, Package, X, Menu } from "lucide-react";
 import { AudienceCard, OfferCard, StepCard } from "./Cards";
 
 const LandingPage = () => {
+  const [open, setOpen] = useState(false);
   return (
     <div className="bg-white text-black">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-6 pt-6">
-        <div className="max-w-6xl mx-auto bg-black text-white rounded-full px-8 py-4 flex items-center justify-between shadow-md">
-          <h1 className="text-2xl font-bold tracking-tight">
+      <nav className="fixed top-0 left-0 w-full z-50 px-4 pt-4">
+        <div className="max-w-6xl mx-auto bg-black text-white rounded-full px-6 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold tracking-tight">
             apex<span className="text-zinc-400">.</span>
           </h1>
 
+          {/* Desktop links */}
           <div className="hidden md:flex gap-8 font-medium">
             <a href="#home">Home</a>
             <a href="#about">About</a>
             <a href="#how">How it works</a>
           </div>
 
-          <button className="bg-[#FFBC00] text-black px-5 py-2 rounded-full font-medium hover:bg-yellow-300 transition">
+          {/* Desktop CTA */}
+          <button className="hidden md:block bg-yellow-400 text-black px-5 py-2 rounded-full font-medium">
             Get Started
           </button>
+
+          {/* Mobile menu button */}
+          <button className="md:hidden" onClick={() => setOpen(!open)}>
+            {open ? <X size={26} /> : <Menu size={26} />}
+          </button>
         </div>
+
+        {/* Mobile menu */}
+        {open && (
+          <div className="max-w-6xl mx-auto mt-3 bg-black text-white rounded-3xl p-6 flex flex-col gap-4 md:hidden">
+            <a href="#home" onClick={() => setOpen(false)}>
+              Home
+            </a>
+            <a href="#about" onClick={() => setOpen(false)}>
+              About
+            </a>
+            <a href="#how" onClick={() => setOpen(false)}>
+              How it works
+            </a>
+
+            <button className="mt-2 bg-yellow-400 text-black py-2 rounded-full font-medium">
+              Get Started
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 pt-40 py-20 grid md:grid-cols-2 gap-12 items-center text-center md:text-left" id="home">
+      <section
+        className="max-w-6xl mx-auto px-6 pt-40 py-20 grid md:grid-cols-2 gap-12 items-center text-center md:text-left"
+        id="home"
+      >
         <div>
           <h2 className="text-5xl md:text-6xl font-bold leading-tight">
             Record <br /> Everything.
