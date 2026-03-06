@@ -85,7 +85,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="bg-white text-black w-full overflow-x-hidden">
+    <div className="bg-white text-black w-full">
       {/* Navbar */}
       <motion.nav
         animate={{ y: hidden ? -120 : 0 }}
@@ -184,7 +184,7 @@ const LandingPage = () => {
           className="relative flex justify-center"
         >
           {/* Glow */}
-          <div className="absolute w-[420px] h-[420px] bg-yellow-300/40 blur-3xl rounded-full -z-10" />
+          <div className="absolute w-full h-auto bg-yellow-300/40 blur-3xl rounded-full -z-10" />
 
           {/* FLOATING ICON 1 */}
           <motion.div
