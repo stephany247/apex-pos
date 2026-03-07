@@ -3,6 +3,7 @@ import { ArrowRight, Lock, Mail, Loader2, EyeOff, Eye } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "@/api/auth";
 import { useStore } from "@/context/StoreContext";
+import { Link } from "react-router-dom";
 
 interface LoginPageProps {
   onNavigateToSignup: () => void;
@@ -157,12 +158,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToSignup }) => {
         <div className="text-center mt-8">
           <p className="text-zinc-500 font-medium">
             Don't have an account?{" "}
-            <button
-              onClick={onNavigateToSignup}
+            <Link
+              to="/register"
               className="text-black font-bold hover:underline"
             >
               Create one
-            </button>
+            </Link>
           </p>
         </div>
       </div>

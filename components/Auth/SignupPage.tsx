@@ -11,12 +11,9 @@ import {
 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "@/api/auth";
+import { Link } from "react-router-dom";
 
-interface SignupPageProps {
-  onNavigateToLogin: () => void;
-}
-
-const SignupPage: React.FC<SignupPageProps> = ({ onNavigateToLogin }) => {
+const SignupPage = () => {
   const { setUser } = useStore();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -216,12 +213,11 @@ const SignupPage: React.FC<SignupPageProps> = ({ onNavigateToLogin }) => {
         <div className="text-center mt-8">
           <p className="text-zinc-500 font-medium">
             Already have an account?{" "}
-            <button
-              onClick={onNavigateToLogin}
+            <Link to="/login"
               className="text-black font-bold hover:underline"
             >
               Sign in
-            </button>
+            </Link>
           </p>
         </div>
       </div>
