@@ -105,7 +105,7 @@ const LandingPage = () => {
           <div className="hidden md:flex gap-8 font-medium justify-center flex-1">
             <a href="#home">Home</a>
             <a href="#about">About</a>
-            <a href="#how">How it works</a>
+            <a href="#how-it-works">How it works</a>
           </div>
 
           {/* Desktop CTA */}
@@ -231,7 +231,11 @@ const LandingPage = () => {
       </section>
 
       {/* What we offer */}
-      <section ref={ref} className="relative max-w-5xl mx-auto px-6 py-12">
+      <section
+        ref={ref}
+        className="relative max-w-5xl mx-auto px-6 py-12"
+        id="about"
+      >
         <motion.h3
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -247,6 +251,7 @@ const LandingPage = () => {
               color="bg-[#FFCC3D]"
               title="Real-Time Sales & Expense Tracking"
               text="Record transactions in seconds and instantly see where your money is going. Whether it’s a daily sale, supplier payment, transfer, or unexpected expense, every transaction is captured and organized automatically."
+              CTA="Track Now"
             />
           </StackCard>
 
@@ -255,6 +260,7 @@ const LandingPage = () => {
               color="bg-[#FF4DAC]"
               title="Smart Automation"
               text="Stop manual calculations and eliminate costly errors. Our smart system automatically tracks every transaction, categorizes income and expenses accurately, and updates your records in real time, giving you organized financial data, clear insights, and more time to focus on growing your business."
+              CTA="Automate Finances"
             />
           </StackCard>
 
@@ -263,6 +269,7 @@ const LandingPage = () => {
               color="bg-[#AA5FFF]"
               title="Simple Financial Reports"
               text="Understand your business performance instantly with clean, easy-to-read dashboards that present your sales, expenses, and cash flow in a clear visual format. Make faster, smarter decisions using real-time data designed to give you confidence, clarity, and complete financial visibility."
+              CTA="View Insights"
             />
           </StackCard>
         </div>
@@ -308,7 +315,7 @@ const LandingPage = () => {
       </section>
 
       {/* How it works */}
-      <section className="max-w-6xl mx-auto px-6 py-20" id="how">
+      <section className="max-w-6xl mx-auto px-6 py-20" id="how-it-works">
         <motion.h3
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -331,7 +338,7 @@ const LandingPage = () => {
               number="01"
               title="Login/Signup"
               icon="/assets/auth.png"
-              description="Lorem ipsum dolor sit amet consectetur."
+              description="Create your account or log instart managing your finances with ease."
             />
           </motion.div>
 
@@ -340,7 +347,7 @@ const LandingPage = () => {
               number="02"
               title="Add products"
               icon="/assets/add-products.png"
-              description="Lorem ipsum dolor sit amet consectetur."
+              description="Add your products to your inventory so you can easily track whats in stock."
             />
           </motion.div>
 
@@ -349,7 +356,7 @@ const LandingPage = () => {
               number="03"
               title="Record Sales"
               icon="/assets/record-sales.png"
-              description="Lorem ipsum dolor sit amet consectetur."
+              description="Quickly record every sale and keep your transactions organized."
             />
           </motion.div>
 
@@ -358,7 +365,7 @@ const LandingPage = () => {
               number="04"
               title="Analyze Data"
               icon="/assets/analytics.png"
-              description="Lorem ipsum dolor sit amet consectetur."
+              description="View clear financial insights  to understand your  overall business performance."
             />
           </motion.div>
         </motion.div>
@@ -374,13 +381,15 @@ const LandingPage = () => {
       >
         <h3 className="text-4xl font-bold mb-6">Take Control Now</h3>
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.96 }}
-          className="bg-yellow-400 text-black px-8 py-3 rounded-full font-medium hover:bg-yellow-300 transition"
-        >
-          Join the waitlist
-        </motion.button>
+        <Link to="/register">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.96 }}
+            className="bg-yellow-400 text-black px-8 py-3 rounded-full font-medium hover:bg-yellow-300 transition"
+          >
+            Start using apex
+          </motion.button>
+        </Link>
 
         <p className="text-zinc-500 mt-10 text-sm">
           © 2026 Apex. All rights reserved.

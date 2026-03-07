@@ -5,16 +5,21 @@ export const OfferCard = ({
   color,
   title,
   text,
+  CTA,
 }: {
   color: string;
   title: string;
   text: string;
+  CTA: string;
 }) => (
   <div className={`${color} rounded-3xl p-10`}>
     <h3 className="text-xl font-bold mb-4">{title}</h3>
     <p className="mb-6">{text}</p>
-    <Link to="/register" className="bg-white text-black px-7 py-2 border-2 border-black rounded-full text-sm font-medium">
-      Use apex
+    <Link
+      to="/register"
+      className="bg-white text-black px-6 py-2 border-2 border-black rounded-full text-sm font-medium"
+    >
+      {CTA}
     </Link>
   </div>
 );
