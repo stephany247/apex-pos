@@ -44,7 +44,9 @@ const SalesHistoryView: React.FC = () => {
       );
 
     // Filter by date (YYYY-MM-DD matches the start of ISO string)
-    const matchesDate = selectedDate ? t.date === selectedDate : true;
+    const matchesDate = selectedDate
+      ? new Date(t.date).toISOString().slice(0, 10) === selectedDate
+      : true;
 
     return matchesSearch && matchesDate;
   });
@@ -91,6 +93,17 @@ const SalesHistoryView: React.FC = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-11 pr-4 py-2.5 bg-zinc-50 border-none rounded-full focus:ring-2 focus:ring-black outline-none text-sm font-medium"
             />
+
+            {searchTerm && (
+              <button
+                type="button"
+                aria-label="Clear search"
+                onClick={() => setSearchTerm("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition"
+              >
+                <X size={18} />
+              </button>
+            )}
           </div>
 
           {/* Date Filter */}
@@ -113,17 +126,6 @@ const SalesHistoryView: React.FC = () => {
               </button>
             )}
           </div>
-
-          {/* Clear All Button */}
-          {sales.length > 0 && (
-            <button
-              onClick={() => handleOpenModal("clear-all")}
-              className="flex items-center gap-2 px-4 py-2.5 bg-red-50 text-red-600 font-bold rounded-full border border-red-100 hover:bg-red-100 hover:text-red-700 transition-colors text-sm whitespace-nowrap flex-shrink-0"
-            >
-              <Trash2 size={15} />
-              <span className="hidden lg:inline">Clear History</span>
-            </button>
-          )}
         </div>
       </div>
 
