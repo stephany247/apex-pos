@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { AudienceCard, OfferCard, StackCard, StepCard } from "./Cards";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   const [open, setOpen] = useState(false);
@@ -109,9 +110,12 @@ const LandingPage = () => {
 
           {/* Desktop CTA */}
           <div className="flex-1 flex justify-end">
-            <button className="hidden md:block bg-yellow-400 text-black px-5 py-2 rounded-full font-medium">
+            <Link
+              to="/register"
+              className="hidden md:block bg-yellow-400 text-black px-5 py-2 rounded-full font-medium"
+            >
               Get Started
-            </button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -133,9 +137,12 @@ const LandingPage = () => {
               How it works
             </a>
 
-            <button className="mt-2 bg-yellow-400 text-black py-2 rounded-full font-medium">
+            <Link
+              to="/register"
+              className="mt-2 bg-yellow-400 text-black py-2 rounded-full font-medium"
+            >
               Get Started
-            </button>
+            </Link>
           </div>
         )}
       </motion.nav>
@@ -164,17 +171,18 @@ const LandingPage = () => {
             Smart, simple digital tools designed for busy SME owners. No
             accounting expertise required.
           </motion.p>
-
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.5 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="mt-6 bg-[#FFBC00] px-8 py-2 rounded-full border-2 border-black font-medium hover:bg-yellow-300 transition"
-          >
-            Use apex
-          </motion.button>
+          <Link to="/register">
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35, duration: 0.5 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="mt-6 bg-[#FFBC00] px-8 py-2 rounded-full border-2 border-black font-medium hover:bg-yellow-300 transition"
+            >
+              Use apex
+            </motion.button>
+          </Link>
         </div>
 
         <motion.div
