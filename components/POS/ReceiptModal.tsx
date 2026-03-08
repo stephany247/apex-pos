@@ -8,11 +8,13 @@ interface ReceiptModalProps {
   onClose: () => void;
 }
 
-const ReceiptModal: React.FC<ReceiptModalProps> = ({ transaction, onClose }) => {
+const ReceiptModal: React.FC<ReceiptModalProps> = ({
+  transaction,
+  onClose,
+}) => {
   return (
     <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
       <div className="bg-white w-full max-w-sm rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        
         {/* Close Button */}
         <div className="flex justify-end p-4 pb-0">
           <button
@@ -34,14 +36,23 @@ const ReceiptModal: React.FC<ReceiptModalProps> = ({ transaction, onClose }) => 
             <h2 className="text-2xl font-bold uppercase tracking-widest mb-2">
               Apex POS
             </h2>
-            <p className="text-xs text-zinc-500">123 Commerce St, Business City</p>
+            <p className="text-xs text-zinc-500">
+              123 Commerce St, Business City
+            </p>
             <p className="text-xs text-zinc-500">Tel: +1 234 567 890</p>
           </div>
 
           <div className="border-b-2 border-dashed border-zinc-200 my-4" />
 
           <div className="flex justify-between text-xs mb-1">
-            <span>Date: {new Date(transaction.timestamp).toLocaleDateString()}</span>
+            <span>
+              Date:{" "}
+              {new Date(transaction.timestamp).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
+            </span>
             <span>
               Time:{" "}
               {new Date(transaction.timestamp).toLocaleTimeString([], {

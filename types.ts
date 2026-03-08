@@ -54,15 +54,22 @@ export interface User {
 }
 export interface SaleRecord {
   _id: string;
+  transactionId: string;
   items: {
     productId: string;
     name: string;
     quantity: number;
     unitPrice: number;
+    totalPrice: number;
   }[];
   total: number;
   payment: 'cash' | 'card' | 'transfer';
   date: string;
   time: string;
-  cashierId?: string;
+  soldBy: {
+    _id: string;
+    fullName: string;
+    email: string;
+  };
+  createdAt: string;
 }
