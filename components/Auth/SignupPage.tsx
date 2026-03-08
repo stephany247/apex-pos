@@ -21,6 +21,8 @@ const SignupPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [businessAddress, setBusinessAddress] = useState("");
 
   const mutation = useMutation({
     mutationFn: registerUser,
@@ -43,7 +45,13 @@ const SignupPage = () => {
     const trimmedPassword = password.trim();
 
     // Required fields
-    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
+    if (
+      !trimmedName ||
+      !trimmedEmail ||
+      !trimmedPassword ||
+      !phoneNumber ||
+      !businessAddress
+    ) {
       setError("All fields are required");
       return;
     }
@@ -92,6 +100,8 @@ const SignupPage = () => {
         name: trimmedName,
         email: trimmedEmail,
         password: trimmedPassword,
+        phoneNumber: phoneNumber.trim(),
+        businessAddress: businessAddress.trim(),
       });
     } catch {
       setError("Failed to create account");
@@ -160,6 +170,40 @@ const SignupPage = () => {
 
             <div className="space-y-1">
               <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-4">
+                Phone Number
+              </label>
+
+              <div className="relative">
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="08012345678"
+                  className="w-full bg-zinc-50 border-none rounded-2xl py-4 px-4 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-4">
+                Business Address
+              </label>
+
+              <div className="relative">
+                <input
+                  type="text"
+                  value={businessAddress}
+                  onChange={(e) => setBusinessAddress(e.target.value)}
+                  placeholder="12 Marina Street, Lagos"
+                  className="w-full bg-zinc-50 border-none rounded-2xl py-4 px-4 font-medium focus:ring-2 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-4">
                 Password
               </label>
 
@@ -213,9 +257,7 @@ const SignupPage = () => {
         <div className="text-center mt-8">
           <p className="text-zinc-500 font-medium">
             Already have an account?{" "}
-            <Link to="/login"
-              className="text-black font-bold hover:underline"
-            >
+            <Link to="/login" className="text-black font-bold hover:underline">
               Sign in
             </Link>
           </p>

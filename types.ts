@@ -50,3 +50,11 @@ export interface User {
   email: string;
   role: 'admin' | 'manager' | 'cashier';
 }
+
+export type RegisterUserPayload = {
+  name: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+  businessAddress: string;
+};

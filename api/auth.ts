@@ -1,10 +1,7 @@
 import { BASE_URL } from "@/constants";
+import { RegisterUserPayload } from "@/types";
 
-export const registerUser = async (data: {
-  name: string;
-  email: string;
-  password: string;
-}) => {
+export const registerUser = async (data: RegisterUserPayload) => {
   const response = await fetch(`${BASE_URL}/auth/register`, {
     method: "POST",
     headers: {
