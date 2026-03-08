@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { X } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { updateProfile } from "@/api/auth";
 import { useStore } from "@/context/StoreContext";
+import { X } from "lucide-react";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
+export const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const { currentUser, setUser } = useStore();
 
   const [fullName, setFullName] = useState(currentUser?.name || "");
@@ -18,26 +20,27 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
     currentUser?.businessAddress || "",
   );
 
+  const mutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: (result) => {
+      setUser({
+        ...currentUser!,
+        name: fullName,
+        phoneNumber,
+        businessAddress,
+      });
+      onClose();
+    },
+    onError: (err: any) => {
+      console.error("Failed to update profile:", err.message);
+    },
+  });
+
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const payload = {
-      fullName,
-      phoneNumber,
-      businessAddress,
-    };
-
-    console.log("Update profile", payload);
-
-    // call API here later
-    setUser({
-      ...currentUser!,
-      name: fullName,
-    });
-
-    onClose();
+    mutation.mutate({ fullName, phoneNumber, businessAddress });
   };
 
   return (
@@ -61,14 +64,12 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
             placeholder="Full name"
             className="w-full bg-zinc-50 rounded-xl p-3 outline-none"
           />
-
           <input
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             placeholder="Phone number"
             className="w-full bg-zinc-50 rounded-xl p-3 outline-none"
           />
-
           <input
             value={businessAddress}
             onChange={(e) => setBusinessAddress(e.target.value)}
@@ -76,13 +77,21 @@ const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
             className="w-full bg-zinc-50 rounded-xl p-3 outline-none"
           />
 
-          <button className="w-full bg-black text-white py-3 rounded-xl font-bold">
-            Save Changes
+          <button
+            type="submit"
+            disabled={mutation.isPending}
+            className="w-full bg-black text-white py-3 rounded-xl font-bold disabled:opacity-50"
+          >
+            {mutation.isPending ? "Saving..." : "Save Changes"}
           </button>
+
+          {mutation.isError && (
+            <p className="text-red-500 text-sm text-center">
+              Failed to update profile. Please try again.
+            </p>
+          )}
         </form>
       </div>
     </div>
   );
 };
-
-export default EditProfileModal;

@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/constants";
-import { RegisterUserPayload } from "@/types";
+import { User } from "@/types";
 
-export const registerUser = async (data: RegisterUserPayload) => {
+export const registerUser = async (data: User) => {
   const response = await fetch(`${BASE_URL}/auth/register`, {
     method: "POST",
     headers: {
@@ -98,4 +98,20 @@ export const authFetch = async (url: string, options: any = {}) => {
   }
 
   return response;
+};
+
+export const updateProfile = async (data: {
+  fullName: string;
+  phoneNumber: string;
+  businessAddress: string;
+}) => {
+  const response = await authFetch(`${BASE_URL}/auth/profile`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.message || "Failed to update profile");
+  return result;
 };

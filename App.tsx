@@ -10,7 +10,7 @@ import LoginPage from "./components/Auth/LoginPage";
 import SignupPage from "./components/Auth/SignupPage";
 import LandingPage from "./components/Landing/LandingPage";
 import { Menu, Search } from "lucide-react";
-import EditProfileModal from "./components/Auth/EditProfileModal";
+import { EditProfileModal } from "./components/Auth/EditProfileModal";
 
 // DASHBOARD LAYOUT
 
