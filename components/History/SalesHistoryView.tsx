@@ -394,7 +394,7 @@ const SalesHistoryView: React.FC = () => {
       {modalState.isOpen &&
         (modalState.transaction || modalState.type === "clear-all") && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden p-4 md:p-8 relative">
+            <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-y-auto max-h-[90vh] p-4 md:p-8 relative">
               <button
                 type="button"
                 aria-label="Close modal"
@@ -442,53 +442,79 @@ const SalesHistoryView: React.FC = () => {
                     {editSale.items.map((item, index) => (
                       <div
                         key={index}
-                        className="grid grid-cols-5 items-center gap-3 w-full"
+                        className="space-y-2 border-b border-zinc-100 last:border-0 pb-3 last:pb-0"
                       >
-                        <input
-                          className="col-span-2 px-3 py-2 rounded-lg border text-sm"
-                          value={item.name}
-                          onChange={(e) => {
-                            const updated = [...editSale.items];
-                            updated[index].name = e.target.value;
-                            setEditSale({ ...editSale, items: updated });
-                          }}
-                        />
-
-                        <input
-                          type="number"
-                          className="px-3 py-2 rounded-lg border text-sm"
-                          value={item.quantity}
-                          onChange={(e) => {
-                            const updated = [...editSale.items];
-                            updated[index].quantity = Number(e.target.value);
-                            setEditSale({ ...editSale, items: updated });
-                          }}
-                        />
-
-                        <div className="col-span-2 relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm font-medium">
-                            ₦
-                          </span>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-zinc-500">
+                            Item Name
+                          </label>
                           <input
-                            type="number"
-                            className="w-full pl-7 pr-3 py-2 rounded-lg border text-sm"
-                            value={item.unitPrice}
+                            placeholder="Item name"
+                            className="w-full px-3 py-2 rounded-lg border text-sm"
+                            value={item.name}
                             onChange={(e) => {
                               const updated = [...editSale.items];
-                              updated[index].unitPrice =
-                                Number(e.target.value) || 0;
+                              updated[index].name = e.target.value;
                               setEditSale({ ...editSale, items: updated });
                             }}
                           />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <label className="text-xs font-medium text-zinc-500">
+                              Quantity
+                            </label>
+                            <input
+                              type="number"
+                              placeholder="Qty"
+                              className="w-full px-3 py-2 rounded-lg border text-sm"
+                              value={item.quantity}
+                              onChange={(e) => {
+                                const updated = [...editSale.items];
+                                updated[index].quantity = Number(
+                                  e.target.value,
+                                );
+                                setEditSale({ ...editSale, items: updated });
+                              }}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-xs font-medium text-zinc-500">
+                              Unit Price
+                            </label>
+                            <div className="relative">
+                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm font-medium">
+                                ₦
+                              </span>
+                              <input
+                                type="number"
+                                placeholder="0"
+                                className="w-full pl-7 pr-3 py-2 rounded-lg border text-sm"
+                                value={item.unitPrice}
+                                onChange={(e) => {
+                                  const updated = [...editSale.items];
+                                  updated[index].unitPrice =
+                                    Number(e.target.value) || 0;
+                                  setEditSale({ ...editSale, items: updated });
+                                }}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ))}
 
                     <div>
-                      <label className="text-sm text-zinc-500">
+                      <label
+                        htmlFor="payment-method"
+                        className="text-sm text-zinc-500"
+                      >
                         Payment Method
                       </label>
                       <select
+                        id="payment-method"
                         className="w-full mt-1 px-3 py-2 border rounded-lg"
                         value={editSale?.payment ?? ""}
                         onChange={(e) =>
