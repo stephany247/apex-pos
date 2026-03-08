@@ -96,7 +96,9 @@ const SalesHistoryView: React.FC = () => {
     if (type === "edit" && transaction) {
       setEditSale({
         items: transaction.items,
-        payment: transaction.paymentMethod,
+        payment: transaction.payment
+          ?.toLowerCase()
+          .replace("debit card", "card"),
       });
     }
     setModalState({ isOpen: true, type, transaction: transaction || null });
@@ -124,6 +126,12 @@ const SalesHistoryView: React.FC = () => {
 
     handleCloseModal();
   };
+
+  const nairaFormatter = new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 0,
+  });
 
   return (
     <div className="flex flex-col w-full h-full bg-white rounded-[2rem] shadow-sm border border-zinc-100 relative">
@@ -412,16 +420,22 @@ const SalesHistoryView: React.FC = () => {
                           }}
                         />
 
-                        <input
-                          type="number"
-                          className="col-span-2 px-3 py-2 rounded-lg border text-sm"
-                          value={item.unitPrice}
-                          onChange={(e) => {
-                            const updated = [...editSale.items];
-                            updated[index].unitPrice = Number(e.target.value);
-                            setEditSale({ ...editSale, items: updated });
-                          }}
-                        />
+                        <div className="col-span-2 relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm font-medium">
+                            ₦
+                          </span>
+                          <input
+                            type="number"
+                            className="w-full pl-7 pr-3 py-2 rounded-lg border text-sm"
+                            value={item.unitPrice}
+                            onChange={(e) => {
+                              const updated = [...editSale.items];
+                              updated[index].unitPrice =
+                                Number(e.target.value) || 0;
+                              setEditSale({ ...editSale, items: updated });
+                            }}
+                          />
+                        </div>
                       </div>
                     ))}
 
@@ -431,9 +445,12 @@ const SalesHistoryView: React.FC = () => {
                       </label>
                       <select
                         className="w-full mt-1 px-3 py-2 border rounded-lg"
-                        value={editSale.payment}
+                        value={editSale?.payment ?? ""}
                         onChange={(e) =>
-                          setEditSale({ ...editSale, payment: e.target.value })
+                          setEditSale((prev) => ({
+                            ...prev,
+                            payment: e.target.value,
+                          }))
                         }
                       >
                         <option value="cash">Cash</option>

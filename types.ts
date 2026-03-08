@@ -36,7 +36,7 @@ export interface Transaction {
   tax: number;
   discount: number;
   total: number;
-  paymentMethod: 'Cash' | 'Debit Card' | 'Transfer';
+  payment: 'cash' | 'card' | 'transfer';
   timestamp: string;
   cashierId: string;
   customerId?: string;
