@@ -27,3 +27,32 @@ export const getSales = async () => {
 
   return response.json();
 };
+
+export const updateSale = async (
+  id: string,
+  data: {
+    items: {
+      productId: string;
+      name: string;
+      quantity: number;
+      unitPrice: number;
+    }[];
+    payment: "cash" | "card" | "transfer";
+  },
+) => {
+  const response = await authFetch(`${BASE_URL}/sales/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "Failed to update sale");
+  }
+
+  return result;
+};

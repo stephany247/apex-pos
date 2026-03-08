@@ -14,14 +14,15 @@ import {
   Loader2,
 } from "lucide-react";
 import { Transaction } from "../../types";
-import { useQuery } from "@tanstack/react-query";
-import { getSales } from "@/api/sales";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getSales, updateSale } from "@/api/sales";
 import { formatCurrency } from "@/utils";
 
 const SalesHistoryView: React.FC = () => {
   const { transactions, clearTransactions } = useStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [editSale, setEditSale] = useState<any>(null);
 
   // Modal State
   const [modalState, setModalState] = useState<{
@@ -36,6 +37,7 @@ const SalesHistoryView: React.FC = () => {
   });
   const sales = data?.data?.sales || [];
   console.log("FULL SALES RESPONSE:", data);
+
   const filteredTransactions = sales.filter((t) => {
     const matchesSearch =
       t._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -51,10 +53,25 @@ const SalesHistoryView: React.FC = () => {
     return matchesSearch && matchesDate;
   });
 
+  const queryClient = useQueryClient();
+
+  const updateSaleMutation = useMutation({
+    mutationFn: ({ id, data }: any) => updateSale(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
+    },
+  });
+
   const handleOpenModal = (
     type: "edit" | "delete" | "clear-all",
     transaction?: Transaction | null,
   ) => {
+    if (type === "edit" && transaction) {
+      setEditSale({
+        items: transaction.items,
+        payment: transaction.paymentMethod,
+      });
+    }
     setModalState({ isOpen: true, type, transaction: transaction || null });
   };
 
@@ -63,12 +80,21 @@ const SalesHistoryView: React.FC = () => {
   };
 
   const handleConfirmAction = () => {
+    if (modalState.type === "edit" && modalState.transaction) {
+      updateSaleMutation.mutate({
+        id: modalState.transaction._id,
+        data: editSale,
+      });
+    }
+
     if (modalState.type === "clear-all") {
       clearTransactions();
-    } else if (modalState.type === "delete" && modalState.transaction) {
-      // In a real app, delete specific transaction
-      console.log("Delete transaction", modalState.transaction.id);
     }
+
+    if (modalState.type === "delete" && modalState.transaction) {
+      console.log("Delete transaction", modalState.transaction._id);
+    }
+
     handleCloseModal();
   };
 
@@ -288,7 +314,7 @@ const SalesHistoryView: React.FC = () => {
       {modalState.isOpen &&
         (modalState.transaction || modalState.type === "clear-all") && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden p-8 relative">
+            <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden p-4 md:p-8 relative">
               <button
                 type="button"
                 aria-label="Close modal"
@@ -323,34 +349,73 @@ const SalesHistoryView: React.FC = () => {
                 </h3>
                 <p className="text-zinc-500">
                   {modalState.type === "delete"
-                    ? `Are you sure you want to remove transaction #${modalState.transaction?.id}? This action cannot be undone.`
+                    ? `Are you sure you want to remove transaction #${modalState.transaction?._id}? This action cannot be undone.`
                     : modalState.type === "clear-all"
                       ? "Are you sure you want to delete ALL transaction history? This action is permanent and cannot be undone."
-                      : `Update details for transaction #${modalState.transaction?.id}.`}
+                      : `Update details for transaction #${modalState.transaction?._id}.`}
                 </p>
               </div>
+              {modalState.type === "edit" &&
+                modalState.transaction &&
+                editSale && (
+                  <div className="bg-zinc-50 rounded-xl p-2 md:p-4 mb-6 border border-zinc-100 space-y-4">
+                    {editSale.items.map((item, index) => (
+                      <div
+                        key={index}
+                        className="grid grid-cols-5 items-center gap-3 w-full"
+                      >
+                        <input
+                          className="col-span-2 px-3 py-2 rounded-lg border text-sm"
+                          value={item.name}
+                          onChange={(e) => {
+                            const updated = [...editSale.items];
+                            updated[index].name = e.target.value;
+                            setEditSale({ ...editSale, items: updated });
+                          }}
+                        />
 
-              {modalState.type === "edit" && modalState.transaction && (
-                <div className="bg-zinc-50 rounded-xl p-4 mb-6 border border-zinc-100">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-zinc-500">Date</span>
-                    <span className="font-semibold">
-                      {new Date(
-                        modalState.transaction.timestamp,
-                      ).toLocaleDateString()}
-                    </span>
+                        <input
+                          type="number"
+                          className="px-3 py-2 rounded-lg border text-sm"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const updated = [...editSale.items];
+                            updated[index].quantity = Number(e.target.value);
+                            setEditSale({ ...editSale, items: updated });
+                          }}
+                        />
+
+                        <input
+                          type="number"
+                          className="col-span-2 px-3 py-2 rounded-lg border text-sm"
+                          value={item.unitPrice}
+                          onChange={(e) => {
+                            const updated = [...editSale.items];
+                            updated[index].unitPrice = Number(e.target.value);
+                            setEditSale({ ...editSale, items: updated });
+                          }}
+                        />
+                      </div>
+                    ))}
+
+                    <div>
+                      <label className="text-sm text-zinc-500">
+                        Payment Method
+                      </label>
+                      <select
+                        className="w-full mt-1 px-3 py-2 border rounded-lg"
+                        value={editSale.payment}
+                        onChange={(e) =>
+                          setEditSale({ ...editSale, payment: e.target.value })
+                        }
+                      >
+                        <option value="cash">Cash</option>
+                        <option value="card">Card</option>
+                        <option value="transfer">Transfer</option>
+                      </select>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-zinc-500">Total Amount</span>
-                    <span className="font-semibold">
-                      ₦{modalState.transaction.total.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="text-xs text-zinc-400 mt-4 italic">
-                    Edit form fields would go here...
-                  </div>
-                </div>
-              )}
+                )}
 
               <div className="flex gap-3">
                 <button
