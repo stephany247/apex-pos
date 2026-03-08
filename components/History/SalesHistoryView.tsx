@@ -57,7 +57,34 @@ const SalesHistoryView: React.FC = () => {
 
   const updateSaleMutation = useMutation({
     mutationFn: ({ id, data }: any) => updateSale(id, data),
-    onSuccess: () => {
+
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: ["sales"] });
+
+      const previousSales = queryClient.getQueryData(["sales"]);
+
+      queryClient.setQueryData(["sales"], (old: any) => {
+        if (!old) return old;
+
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            sales: old.data.sales.map((sale: any) =>
+              sale._id === id ? { ...sale, ...data } : sale,
+            ),
+          },
+        };
+      });
+
+      return { previousSales };
+    },
+
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(["sales"], context?.previousSales);
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sales"] });
     },
   });
