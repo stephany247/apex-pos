@@ -10,6 +10,7 @@ import LoginPage from "./components/Auth/LoginPage";
 import SignupPage from "./components/Auth/SignupPage";
 import LandingPage from "./components/Landing/LandingPage";
 import { Menu, Search } from "lucide-react";
+import EditProfileModal from "./components/Auth/EditProfileModal";
 
 // DASHBOARD LAYOUT
 
@@ -17,6 +18,7 @@ const DashboardLayout: React.FC = () => {
   const { currentUser } = useStore();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const getViewTitle = () => {
     if (location.pathname.includes("inventory")) return "Inventory";
@@ -61,9 +63,12 @@ const DashboardLayout: React.FC = () => {
                 {currentUser?.role}
               </p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-[#FAE29F] flex items-center justify-center font-bold text-[#D97706]">
+            <button
+              onClick={() => setProfileOpen(true)}
+              className="w-10 h-10 rounded-full bg-[#FAE29F] flex items-center justify-center font-bold text-[#D97706] border-2 border-white"
+            >
               {currentUser?.name?.charAt(0)}
-            </div>
+            </button>
           </div>
         </header>
 
@@ -88,6 +93,11 @@ const DashboardLayout: React.FC = () => {
             </Routes>
           </div>
         </div>
+
+        <EditProfileModal
+          isOpen={profileOpen}
+          onClose={() => setProfileOpen(false)}
+        />
       </main>
     </div>
   );
