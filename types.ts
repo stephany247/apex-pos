@@ -36,7 +36,7 @@ export interface Transaction {
   tax: number;
   discount: number;
   total: number;
-  payment: 'cash' | 'card' | 'transfer';
+  paymentMethod: 'Cash' | 'Debit Card' | 'Transfer';
   timestamp: string;
   cashierId: string;
   customerId?: string;
@@ -49,12 +49,20 @@ export interface User {
   name: string;
   email: string;
   role: 'admin' | 'manager' | 'cashier';
+  phoneNumber?: string;
+  businessAddress?: string;
 }
-
-export type RegisterUserPayload = {
-  name: string;
-  email: string;
-  password: string;
-  phoneNumber: string;
-  businessAddress: string;
-};
+export interface SaleRecord {
+  _id: string;
+  items: {
+    productId: string;
+    name: string;
+    quantity: number;
+    unitPrice: number;
+  }[];
+  total: number;
+  payment: 'cash' | 'card' | 'transfer';
+  date: string;
+  time: string;
+  cashierId?: string;
+}

@@ -14,7 +14,7 @@ import {
   Loader2,
   Printer,
 } from "lucide-react";
-import { Transaction } from "../../types";
+import { SaleRecord, Transaction } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteSale, getSales, updateSale } from "@/api/sales";
 import { formatCurrency } from "@/utils";
@@ -37,7 +37,7 @@ const SalesHistoryView: React.FC = () => {
     queryKey: ["sales"],
     queryFn: getSales,
   });
-  const sales = data?.data?.sales || [];
+  const sales: SaleRecord[] = data?.data?.sales || [];
   console.log("FULL SALES RESPONSE:", data);
 
   const filteredTransactions = sales.filter((t) => {
@@ -125,7 +125,7 @@ const SalesHistoryView: React.FC = () => {
 
   const handleOpenModal = (
     type: "edit" | "delete" | "clear-all" | "print",
-    transaction?: Transaction | null,
+    transaction?: SaleRecord | null,
   ) => {
     if (type === "edit" && transaction) {
       setEditSale({
