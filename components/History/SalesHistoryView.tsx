@@ -12,11 +12,13 @@ import {
   Trash2,
   AlertCircle,
   Loader2,
+  Printer,
 } from "lucide-react";
 import { Transaction } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteSale, getSales, updateSale } from "@/api/sales";
 import { formatCurrency } from "@/utils";
+import ReceiptModal from "../POS/ReceiptModal";
 
 const SalesHistoryView: React.FC = () => {
   const { transactions, clearTransactions } = useStore();
@@ -122,7 +124,7 @@ const SalesHistoryView: React.FC = () => {
   });
 
   const handleOpenModal = (
-    type: "edit" | "delete" | "clear-all",
+    type: "edit" | "delete" | "clear-all" | "print",
     transaction?: Transaction | null,
   ) => {
     if (type === "edit" && transaction) {
@@ -358,6 +360,14 @@ const SalesHistoryView: React.FC = () => {
                         >
                           <Trash2 size={14} />
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenModal("print", transaction)}
+                          className="p-2 text-zinc-500 bg-zinc-100 hover:bg-black hover:text-white rounded-full transition-all"
+                          title="Print Receipt"
+                        >
+                          <Printer size={14} />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -495,6 +505,29 @@ const SalesHistoryView: React.FC = () => {
                     </div>
                   </div>
                 )}
+
+              {modalState.type === "print" && modalState.transaction && (
+                <ReceiptModal
+                  transaction={{
+                    id: modalState.transaction._id,
+                    timestamp:
+                      modalState.transaction.date +
+                      "T" +
+                      modalState.transaction.time,
+                    cashierId: modalState.transaction.cashierId ?? "N/A",
+                    items: modalState.transaction.items.map((item: any) => ({
+                      name: item.name,
+                      quantity: item.quantity,
+                      price: item.unitPrice,
+                    })),
+                    subtotal: modalState.transaction.total,
+                    discount: 0,
+                    total: modalState.transaction.total,
+                    paymentMethod: modalState.transaction.payment,
+                  }}
+                  onClose={handleCloseModal}
+                />
+              )}
 
               <div className="flex gap-3">
                 <button
