@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Transaction } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getSales, updateSale } from "@/api/sales";
+import { deleteSale, getSales, updateSale } from "@/api/sales";
 import { formatCurrency } from "@/utils";
 
 const SalesHistoryView: React.FC = () => {
@@ -90,6 +90,37 @@ const SalesHistoryView: React.FC = () => {
     },
   });
 
+  const deleteSaleMutation = useMutation({
+    mutationFn: (id: string) => deleteSale(id),
+
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["sales"] });
+      const previousSales = queryClient.getQueryData(["sales"]);
+
+      queryClient.setQueryData(["sales"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            sales: old.data.sales.filter((sale: any) => sale._id !== id),
+          },
+        };
+      });
+
+      return { previousSales };
+    },
+
+    onError: (_err, _vars, context) => {
+      console.error("Delete failed:", _err);
+      queryClient.setQueryData(["sales"], context?.previousSales);
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
+    },
+  });
+
   const handleOpenModal = (
     type: "edit" | "delete" | "clear-all",
     transaction?: Transaction | null,
@@ -125,7 +156,7 @@ const SalesHistoryView: React.FC = () => {
     }
 
     if (modalState.type === "delete" && modalState.transaction) {
-      console.log("Delete transaction", modalState.transaction._id);
+      deleteSaleMutation.mutate(modalState.transaction._id);
     }
 
     handleCloseModal();

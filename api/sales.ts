@@ -56,3 +56,20 @@ export const updateSale = async (
 
   return result;
 };
+
+export const deleteSale = async (id: string) => {
+  const response = await authFetch(`${BASE_URL}/sales/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "Failed to delete sale");
+  }
+
+  return result;
+};
