@@ -81,6 +81,7 @@ const SalesHistoryView: React.FC = () => {
     },
 
     onError: (_err, _vars, context) => {
+      console.error("Update failed:", _err);
       queryClient.setQueryData(["sales"], context?.previousSales);
     },
 
@@ -95,10 +96,13 @@ const SalesHistoryView: React.FC = () => {
   ) => {
     if (type === "edit" && transaction) {
       setEditSale({
-        items: transaction.items,
-        payment: transaction.payment
-          ?.toLowerCase()
-          .replace("debit card", "card"),
+        items: transaction.items.map((item: any) => ({
+          productId: item.productId,
+          name: item.name,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+        })),
+        payment: transaction.payment,
       });
     }
     setModalState({ isOpen: true, type, transaction: transaction || null });
