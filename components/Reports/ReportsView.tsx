@@ -4,16 +4,30 @@ import { getAnalytics } from "@/api/analytics";
 import { useStore } from "../../context/StoreContext";
 import { formatCurrency } from "@/utils";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, PieChart, Pie, Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import {
-  TrendingUp, DollarSign, ShoppingBag, Users,
-  ArrowUpRight, ArrowDownRight, MoreHorizontal, Loader2,
+  TrendingUp,
+  DollarSign,
+  ShoppingBag,
+  Users,
+  ArrowUpRight,
+  ArrowDownRight,
+  MoreHorizontal,
+  Loader2,
 } from "lucide-react";
+import { getSales } from "@/api/sales";
 
 const ReportsView: React.FC = () => {
-  const { transactions } = useStore();
   const [period, setPeriod] = useState<"day" | "week" | "month">("month");
 
   const { data, isLoading, error } = useQuery({
@@ -24,21 +38,37 @@ const ReportsView: React.FC = () => {
   const analytics = data?.data;
 
   // Keep local chart data from transactions
+
+  const { data: salesData } = useQuery({
+    queryKey: ["sales"],
+    queryFn: getSales,
+  });
+
   const chartData = useMemo(() => {
     const salesByDay: Record<string, number> = {};
     const salesByMethod: Record<string, number> = {};
 
-    transactions.forEach((t) => {
-      const date = new Date(t.timestamp).toLocaleDateString(undefined, { weekday: "short" });
+    const sales = salesData?.data?.sales || [];
+
+    sales.forEach((t: any) => {
+      const date = new Date(t.date).toLocaleDateString(undefined, {
+        weekday: "short",
+      });
       salesByDay[date] = (salesByDay[date] || 0) + t.total;
-      salesByMethod[t.paymentMethod] = (salesByMethod[t.paymentMethod] || 0) + 1;
+      salesByMethod[t.payment] = (salesByMethod[t.payment] || 0) + 1;
     });
 
     return {
-      barData: Object.keys(salesByDay).map((date) => ({ date, sales: salesByDay[date] })),
-      pieData: Object.keys(salesByMethod).map((method) => ({ name: method, value: salesByMethod[method] })),
+      barData: Object.keys(salesByDay).map((date) => ({
+        date,
+        sales: salesByDay[date],
+      })),
+      pieData: Object.keys(salesByMethod).map((method) => ({
+        name: method,
+        value: salesByMethod[method],
+      })),
     };
-  }, [transactions]);
+  }, [salesData]);
 
   const PIE_COLORS = ["#111111", "#FDE047", "#9CA3AF"];
 
@@ -52,7 +82,9 @@ const ReportsView: React.FC = () => {
               key={t}
               onClick={() => setPeriod(t)}
               className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all capitalize ${
-                period === t ? "bg-[#111] text-white" : "text-zinc-500 hover:text-zinc-900"
+                period === t
+                  ? "bg-[#111] text-white"
+                  : "text-zinc-500 hover:text-zinc-900"
               }`}
             >
               {t}
@@ -118,63 +150,127 @@ const ReportsView: React.FC = () => {
             <div className="lg:col-span-2 bg-white p-8 rounded-[2rem] shadow-sm border border-zinc-100">
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="font-bold text-xl text-zinc-900">Sales Analytics</h3>
-                  <p className="text-zinc-500 text-sm capitalize">{period}ly performance</p>
+                  <h3 className="font-bold text-xl text-zinc-900">
+                    Sales Analytics
+                  </h3>
+                  <p className="text-zinc-500 text-sm capitalize">
+                    {period}ly performance
+                  </p>
                 </div>
-                {/* <button className="p-2 rounded-full hover:bg-zinc-50 text-zinc-400">
-                  <MoreHorizontal />
-                </button> */}
+                {/* yy */}
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData.barData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                    <XAxis dataKey="date" axisLine={false} tickLine={false}
-                      tick={{ fill: "#9ca3af", fontSize: 12, fontWeight: 500 }} dy={10} />
-                    <YAxis axisLine={false} tickLine={false}
-                      tick={{ fill: "#9ca3af", fontSize: 12, fontWeight: 500 }} />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#f3f4f6"
+                    />
+                    <XAxis
+                      dataKey="date"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#9ca3af", fontSize: 12, fontWeight: 500 }}
+                      dy={10}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#9ca3af", fontSize: 12, fontWeight: 500 }}
+                    />
                     <Tooltip
-                      contentStyle={{ backgroundColor: "#111", border: "none", borderRadius: "12px", color: "#fff", padding: "12px" }}
+                      contentStyle={{
+                        backgroundColor: "#111",
+                        border: "none",
+                        borderRadius: "12px",
+                        color: "#fff",
+                        padding: "12px",
+                      }}
                       cursor={{ fill: "#f3f4f6", radius: 8 }}
                     />
-                    <Bar dataKey="sales" fill="#111" radius={[8, 8, 8, 8]} barSize={40} />
+                    <Bar
+                      dataKey="sales"
+                      fill="#111"
+                      radius={[8, 8, 8, 8]}
+                      barSize={40}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
             <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-zinc-100 flex flex-col">
-              <h3 className="font-bold text-xl text-zinc-900 mb-2">Payment Type</h3>
+              <h3 className="font-bold text-xl text-zinc-900 mb-2">
+                Payment Type
+              </h3>
               <p className="text-zinc-500 text-sm mb-4">
-                Top method: <span className="font-bold text-zinc-800 capitalize">{analytics.topPaymentMethod}</span>
+                Top method:{" "}
+                <span className="font-bold text-zinc-800 capitalize">
+                  {analytics.topPaymentMethod}
+                </span>
               </p>
-              <div className="flex-1 relative my-4">
+              <div className="flex-1 relative my-4 md:my-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={chartData.pieData} cx="50%" cy="50%"
-                      innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
+                    <Pie
+                      data={chartData.pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                    >
                       {chartData.pieData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={PIE_COLORS[index % PIE_COLORS.length]}
+                        />
                       ))}
                     </Pie>
-                    <Tooltip contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)" }} />
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: "12px",
+                        border: "none",
+                        boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="text-center">
-                    <span className="block text-2xl font-bold">{analytics.totalOrders.value}</span>
-                    <span className="text-xs text-zinc-400 font-bold uppercase">Txns</span>
+                    <span className="block text-2xl font-bold">
+                      {analytics.totalOrders.value}
+                    </span>
+                    <span className="text-xs text-zinc-400 font-bold uppercase">
+                      Txns
+                    </span>
                   </div>
                 </div>
               </div>
               <div className="mt-6 space-y-3">
                 {chartData.pieData.map((entry, index) => (
-                  <div key={entry.name} className="flex items-center justify-between text-sm">
+                  <div
+                    key={entry.name}
+                    className="flex items-center justify-between text-sm"
+                  >
                     <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }} />
-                      <span className="font-medium text-zinc-600">{entry.name}</span>
+                      <span
+                        className="w-3 h-3 rounded-full"
+                        style={{
+                          backgroundColor:
+                            PIE_COLORS[index % PIE_COLORS.length],
+                        }}
+                      />
+                      <span className="font-medium text-zinc-600 capitalize">
+                        {entry.name}
+                      </span>
                     </div>
-                    <span className="font-bold text-zinc-900">{entry.value}</span>
+                    <span className="font-bold text-zinc-900">
+                      {entry.value}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -186,7 +282,7 @@ const ReportsView: React.FC = () => {
   );
 };
 
-// KPICard component stays the same
+// KPICard component
 interface KPICardProps {
   title: string;
   value: string;
