@@ -52,6 +52,15 @@ export interface User {
   phoneNumber?: string;
   businessAddress?: string;
 }
+
+export interface RegisterPayload {
+  name: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+  businessAddress: string;
+
+}
 export interface SaleRecord {
   _id: string;
   transactionId: string;

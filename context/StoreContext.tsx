@@ -6,6 +6,7 @@ import {
   MOCK_TRANSACTIONS,
   CURRENT_USER,
 } from "../constants";
+import { getProfile } from "@/api/auth";
 
 interface StoreContextType {
   products: Product[];
@@ -51,13 +52,27 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   // Load user from local storage on mount
+
   useEffect(() => {
     const initAuth = async () => {
       try {
         const storedUser = localStorage.getItem("apex_user");
 
         if (storedUser) {
-          setCurrentUser(JSON.parse(storedUser));
+          const parsed = JSON.parse(storedUser);
+          setCurrentUser(parsed); // set immediately so UI doesn't wait
+
+          // Fetch full profile to hydrate phoneNumber and businessAddress
+          const profile = await getProfile();
+          console.log("PROFILE RESPONSE:", profile);
+          const fullUser = {
+            ...parsed,
+            name: profile.data?.fullName || parsed.name,
+            phoneNumber: profile.data?.phoneNumber || "",
+            businessAddress: profile.data?.businessAddress || "",
+          };
+          setCurrentUser(fullUser);
+          localStorage.setItem("apex_user", JSON.stringify(fullUser));
         }
       } catch {
         localStorage.removeItem("apex_user");

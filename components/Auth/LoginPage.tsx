@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ArrowRight, Lock, Mail, Loader2, EyeOff, Eye } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "@/api/auth";
+import { getProfile, loginUser } from "@/api/auth";
 import { useStore } from "@/context/StoreContext";
 import { Link } from "react-router-dom";
 
@@ -18,10 +18,19 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToSignup }) => {
 
   const mutation = useMutation({
     mutationFn: loginUser,
-    onSuccess: (data) => {
-      setUser(data.data.user);
+    onSuccess: async (data) => {
       localStorage.setItem("accessToken", data.data.accessToken);
       localStorage.setItem("refreshToken", data.data.refreshToken);
+
+      // Fetch full profile to get phoneNumber and businessAddress
+      const profileRes = await getProfile();
+      console.log("PROFILE AFTER LOGIN:", profileRes);
+
+      setUser({
+        ...data.data.user,
+        phoneNumber: profileRes.data?.phoneNumber || "",
+        businessAddress: profileRes.data?.businessAddress || "",
+      });
     },
     onError: (error: any) => {
       setError(error.message);

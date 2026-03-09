@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/constants";
-import { User } from "@/types";
+import { RegisterPayload } from "@/types";
 
-export const registerUser = async (data: User) => {
+export const registerUser = async (data: RegisterPayload) => {
   const response = await fetch(`${BASE_URL}/auth/register`, {
     method: "POST",
     headers: {
@@ -113,5 +113,15 @@ export const updateProfile = async (data: {
 
   const result = await response.json();
   if (!response.ok) throw new Error(result.message || "Failed to update profile");
+  return result;
+};
+
+export const getProfile = async () => {
+  const response = await authFetch(`${BASE_URL}/auth/me`, {
+    method: "GET",
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.message || "Failed to fetch profile");
   return result;
 };

@@ -10,7 +10,7 @@ import {
   EyeClosed,
 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { registerUser } from "@/api/auth";
+import { getProfile, registerUser } from "@/api/auth";
 import { Link } from "react-router-dom";
 
 const SignupPage = () => {
@@ -26,10 +26,22 @@ const SignupPage = () => {
 
   const mutation = useMutation({
     mutationFn: registerUser,
-    onSuccess: (data) => {
-      setUser(data.data.user);
+    onSuccess: async (data) => {
       localStorage.setItem("accessToken", data.data.accessToken);
       localStorage.setItem("refreshToken", data.data.refreshToken);
+
+      // Fetch full profile to get phoneNumber and businessAddress
+      const profileRes = await getProfile();
+      console.log("PROFILE AFTER LOGIN:", profileRes);
+
+      setUser({
+        id: data.data.user._id,
+        name: profileRes.data?.fullName || data.data.user.fullName,
+        email: data.data.user.email,
+        role: data.data.user.role || "cashier",
+        phoneNumber: profileRes.data?.phoneNumber || "",
+        businessAddress: profileRes.data?.businessAddress || "",
+      });
     },
     onError: () => {
       setError("Failed to create account");
