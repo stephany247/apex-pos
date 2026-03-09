@@ -2,6 +2,7 @@ import React from "react";
 import { Printer, X } from "lucide-react";
 import { Transaction } from "../../types";
 import { formatCurrency } from "@/utils";
+import { useStore } from "@/context/StoreContext";
 
 interface ReceiptModalProps {
   transaction: Transaction;
@@ -12,6 +13,7 @@ const ReceiptModal: React.FC<ReceiptModalProps> = ({
   transaction,
   onClose,
 }) => {
+  const { currentUser } = useStore();
   return (
     <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
       <div className="bg-white w-full max-w-sm rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -37,9 +39,11 @@ const ReceiptModal: React.FC<ReceiptModalProps> = ({
               Apex POS
             </h2>
             <p className="text-xs text-zinc-500">
-              123 Commerce St, Business City
+              {currentUser?.businessAddress || "N/A"}
             </p>
-            <p className="text-xs text-zinc-500">Tel: +1 234 567 890</p>
+            <p className="text-xs text-zinc-500">
+              Tel: {currentUser?.phoneNumber || "N/A"}
+            </p>
           </div>
 
           <div className="border-b-2 border-dashed border-zinc-200 my-4" />
