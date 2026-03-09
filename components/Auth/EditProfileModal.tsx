@@ -58,24 +58,54 @@ export const EditProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
         <h2 className="text-xl font-bold mb-6">Edit Profile</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Full name"
-            className="w-full bg-zinc-50 rounded-xl p-3 outline-none"
-          />
-          <input
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="Phone number"
-            className="w-full bg-zinc-50 rounded-xl p-3 outline-none"
-          />
-          <input
-            value={businessAddress}
-            onChange={(e) => setBusinessAddress(e.target.value)}
-            placeholder="Business address"
-            className="w-full bg-zinc-50 rounded-xl p-3 outline-none"
-          />
+          <div className="space-y-1">
+            <label
+              htmlFor="fullName"
+              className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-1"
+            >
+              Full Name
+            </label>
+            <input
+              id="fullName"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="John Doe"
+              className="w-full bg-zinc-50 rounded-xl p-3 outline-none focus:ring-2 focus:ring-black"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label
+              htmlFor="phoneNumber"
+              className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-1"
+            >
+              Phone Number
+            </label>
+            <input
+              id="phoneNumber"
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="08012345678"
+              className="w-full bg-zinc-50 rounded-xl p-3 outline-none focus:ring-2 focus:ring-black"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label
+              htmlFor="businessAddress"
+              className="text-xs font-bold uppercase tracking-wider text-zinc-400 ml-1"
+            >
+              Business Address
+            </label>
+            <input
+              id="businessAddress"
+              value={businessAddress}
+              onChange={(e) => setBusinessAddress(e.target.value)}
+              placeholder="12 Marina Street, Lagos"
+              className="w-full bg-zinc-50 rounded-xl p-3 outline-none focus:ring-2 focus:ring-black"
+            />
+          </div>
 
           <button
             type="submit"
