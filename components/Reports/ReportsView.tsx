@@ -44,31 +44,54 @@ const ReportsView: React.FC = () => {
     queryFn: getSales,
   });
 
+  // TODO: replace with full sales data once backend supports limit param
+  // or once analytics endpoint returns salesByDay and paymentBreakdown
+
   const chartData = useMemo(() => {
-    const salesByDay: Record<string, number> = {};
+    const sales = salesData?.data?.sales || [];
+    const now = new Date();
+
+    const filtered = sales.filter((t: any) => {
+      const saleDate = new Date(t.date);
+      if (period === "day") {
+        return saleDate.toDateString() === now.toDateString();
+      }
+      if (period === "week") {
+        const weekAgo = new Date(now);
+        weekAgo.setDate(now.getDate() - 7);
+        return saleDate >= weekAgo;
+      }
+      if (period === "month") {
+        return (
+          saleDate.getMonth() === now.getMonth() &&
+          saleDate.getFullYear() === now.getFullYear()
+        );
+      }
+      return true;
+    });
+
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const salesByDay: Record<string, number> = Object.fromEntries(
+      days.map((d) => [d, 0]),
+    );
     const salesByMethod: Record<string, number> = {};
 
-    const sales = salesData?.data?.sales || [];
-
-    sales.forEach((t: any) => {
-      const date = new Date(t.date).toLocaleDateString(undefined, {
+    filtered.forEach((t: any) => {
+      const date = new Date(t.date).toLocaleDateString("en-US", {
         weekday: "short",
       });
-      salesByDay[date] = (salesByDay[date] || 0) + t.total;
+      if (salesByDay[date] !== undefined) salesByDay[date] += t.total;
       salesByMethod[t.payment] = (salesByMethod[t.payment] || 0) + 1;
     });
 
     return {
-      barData: Object.keys(salesByDay).map((date) => ({
-        date,
-        sales: salesByDay[date],
-      })),
+      barData: days.map((date) => ({ date, sales: salesByDay[date] })),
       pieData: Object.keys(salesByMethod).map((method) => ({
         name: method,
         value: salesByMethod[method],
       })),
     };
-  }, [salesData]);
+  }, [salesData, period]);
 
   const PIE_COLORS = ["#111111", "#FDE047", "#9CA3AF"];
 
@@ -94,8 +117,8 @@ const ReportsView: React.FC = () => {
       </div>
 
       {isLoading && (
-        <div className="flex items-center justify-center h-48 text-zinc-500 gap-3">
-          <Loader2 className="animate-spin" size={24} />
+        <div className="flex flex-col gap-3 items-center justify-center h-48 text-zinc-500 font-medium">
+          <Loader2 className="animate-spin" size={36} />
           Loading analytics...
         </div>
       )}
